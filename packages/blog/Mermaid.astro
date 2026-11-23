@@ -91,12 +91,18 @@
       startOnLoad: false,
       securityLevel: 'strict',
       theme: 'base',
+      // Mermaid 12 defaults to the 'neo' look (drop shadows) and the ELK
+      // layout; keep the flat look and dagre layout the theme is styled for.
+      look: 'classic',
+      layout: 'dagre',
       fontFamily: '"IBM Plex Mono", ui-monospace, monospace',
       themeVariables: themeVariables(),
       flowchart: {
         htmlLabels: false,
         curve: 'basis',
         padding: 12,
+        minNodeWidth: 0,
+        wrappingWidth: 200,
       },
       sequence: {
         actorMargin: 28,
