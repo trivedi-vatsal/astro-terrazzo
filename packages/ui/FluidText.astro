@@ -1,0 +1,87 @@
+---
+/**
+ * Oversized outline text whose gradient follows the pointer. Decorative only.
+ */
+interface Props {
+  text: string
+  /** SVG viewBox width; widen it for long text. */
+  width?: number
+  /** SVG viewBox height, also the font size. */
+  height?: number
+}
+
+const { text, width = 1200, height = 300 } = Astro.props
+const gradientId = `fluid-${text.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+---
+
+<fluid-text
+  class="relative block size-full overflow-hidden after:absolute after:bottom-0 after:h-px after:w-full after:bg-current/15"
+  data-width={width}
+  aria-hidden="true"
+>
+  <svg
+    class="size-full translate-y-[37.5%] select-none"
+    viewBox={`0 0 ${width} ${height}`}
+    fill="none"
+  >
+    <text
+      x="50%"
+      y="50%"
+      text-anchor="middle"
+      dominant-baseline="central"
+      stroke="currentColor"
+      stroke-opacity="0.1"
+      stroke-width="2"
+      fill={`url(#${gradientId})`}
+      style={`font-family: Helvetica, Arial, sans-serif; font-size: ${height}px; font-weight: bold`}
+    >
+      {text}
+    </text>
+    <defs>
+      <linearGradient
+        id={gradientId}
+        x1={width / 2}
+        y1="0"
+        x2={width / 2}
+        y2={height}
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop offset="0.625" stop-color="currentColor" stop-opacity="0"></stop>
+        <stop offset="1" stop-color="currentColor"></stop>
+      </linearGradient>
+    </defs>
+  </svg>
+</fluid-text>
+
+<script>
+  class FluidText extends HTMLElement {
+    connectedCallback() {
+      const gradient = this.querySelector('linearGradient')
+      if (!gradient || matchMedia('(prefers-reduced-motion: reduce)').matches)
+        return
+      const width = Number(this.dataset.width)
+      let current = width / 2
+      let target = current
+      let frame = 0
+
+      // Ease toward the pointer each frame; stops once it settles.
+      const step = () => {
+        current += (target - current) * 0.12
+        gradient.setAttribute('x1', current.toFixed(1))
+        frame =
+          Math.abs(target - current) > 0.5 ? requestAnimationFrame(step) : 0
+      }
+      const follow = (x: number) => {
+        target = x
+        frame ||= requestAnimationFrame(step)
+      }
+
+      this.addEventListener('pointermove', (event) => {
+        const box = this.getBoundingClientRect()
+        follow(((event.clientX - box.left) / box.width) * width)
+      })
+      this.addEventListener('pointerleave', () => follow(width / 2))
+    }
+  }
+  customElements.define('fluid-text', FluidText)
+</script>

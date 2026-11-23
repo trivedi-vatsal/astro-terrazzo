@@ -1,0 +1,89 @@
+---
+import BentoTile from './BentoTile.astro'
+import type { Building } from '../types.ts'
+
+type Props = Building
+
+const { status, title, summary, tags, href } = Astro.props
+---
+
+<BentoTile
+  tile="building"
+  href={href}
+  class="order-4 col-span-1 flex min-h-[220px] flex-col justify-between overflow-hidden p-5 sm:p-6 lg:order-4 lg:col-span-5"
+  delay={120}
+  label="Currently building"
+>
+  <div class="relative z-10">
+    <span class="text-primary bento-wake bento-wake-fade font-mono text-[0.7rem]">
+      {status}
+    </span>
+    <h2 class="bento-wake bento-wake-title mt-2 text-2xl font-semibold tracking-tight">
+      {title}
+    </h2>
+    <p class="text-muted-foreground mt-2 max-w-md text-sm leading-relaxed">
+      {summary}
+    </p>
+    <ul class="mt-4 flex flex-wrap gap-2">
+      {tags.map((tag, i) => (
+        <li
+          class="text-muted-foreground bento-wake bento-wake-x font-mono text-[0.65rem] tracking-wide"
+          style={`--wake-delay: ${i * 40}ms`}
+        >
+          / {tag}
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <!-- Abstract architecture visualization -->
+  <div
+    class="pointer-events-none absolute inset-x-0 bottom-0 h-28 opacity-70"
+    aria-hidden="true"
+  >
+    <svg class="h-full w-full" viewBox="0 0 400 110" fill="none">
+      <rect
+        x="24"
+        y="40"
+        width="70"
+        height="44"
+        rx="4"
+        class="anim-node stroke-foreground/20"
+        stroke-width="1"
+      ></rect>
+      <rect
+        x="120"
+        y="24"
+        width="90"
+        height="60"
+        rx="4"
+        class="anim-node anim-node-delay-1 stroke-primary/50"
+        stroke-width="1.5"
+      ></rect>
+      <rect
+        x="240"
+        y="36"
+        width="70"
+        height="48"
+        rx="4"
+        class="anim-node anim-node-delay-2 stroke-foreground/20"
+        stroke-width="1"
+      ></rect>
+      <rect
+        x="330"
+        y="48"
+        width="50"
+        height="36"
+        rx="4"
+        class="anim-node anim-node-delay-3 stroke-foreground/15"
+        stroke-width="1"
+      ></rect>
+      <path
+        d="M94 62 H120 M210 54 H240 M310 60 H330"
+        class="anim-dash stroke-primary/40"
+        stroke-width="1"
+      ></path>
+      <circle cx="165" cy="54" r="3" class="anim-signal fill-primary"></circle>
+    </svg>
+  </div>
+</BentoTile>

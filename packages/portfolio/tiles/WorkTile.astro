@@ -1,0 +1,44 @@
+---
+import { Icon, type IconName } from '@terrazzo/ui'
+import BentoTile from './BentoTile.astro'
+
+interface Props {
+  title: string
+  themes: { label: string; icon: IconName }[]
+  href: string
+  action: string
+}
+
+const { title, themes, href, action } = Astro.props
+---
+
+<BentoTile
+  tile="work"
+  href={href}
+  class="order-9 col-span-1 flex min-h-[200px] flex-col justify-between p-5 sm:p-6 lg:order-3 lg:col-span-3"
+  delay={100}
+  label={title}
+>
+  <div>
+    <h2 class="text-base font-semibold tracking-tight">{title}</h2>
+    <ul class="mt-4 space-y-2.5">
+      {themes.map((theme, i) => (
+        <li
+          class="bento-wake bento-wake-x flex items-center gap-3"
+          style={`--wake-delay: ${i * 45}ms`}
+        >
+          <span class="border-border/70 bg-secondary/50 text-primary inline-flex size-8 shrink-0 items-center justify-center rounded-md border">
+            <Icon name={theme.icon} class="size-4" strokeWidth={1.6} />
+          </span>
+          <span class="text-lg font-medium tracking-tight sm:text-xl">
+            {theme.label}
+          </span>
+        </li>
+      ))}
+    </ul>
+  </div>
+  <span class="bento-arrow text-foreground mt-6">
+    {action}
+    <span aria-hidden="true">→</span>
+  </span>
+</BentoTile>

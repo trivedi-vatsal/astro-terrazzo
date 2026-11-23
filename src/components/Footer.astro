@@ -1,0 +1,52 @@
+---
+import { ContactNote } from '@terrazzo/portfolio'
+import { FluidText } from '@terrazzo/ui'
+import { LINKS, SITE, SOCIALS } from '../config.ts'
+
+const link =
+  'text-muted-foreground hover:text-foreground text-xs tracking-wide underline-offset-4 transition-colors hover:underline'
+---
+
+<footer class="border-border/60 w-full border-t">
+  <div class="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-6 px-3 py-8 sm:px-4 md:flex-row md:items-start md:px-6">
+    <p class="text-muted-foreground text-center font-mono text-xs tracking-wide md:pt-1 md:text-left">
+      © {new Date().getFullYear()}
+      {SITE.title} · Built with Astro
+    </p>
+
+    <nav
+      aria-label="Footer links"
+      class="flex flex-col items-center gap-2 md:items-start"
+    >
+      <ContactNote
+        email={LINKS.email}
+        label="Send a note"
+        subject={`A note from ${Astro.site?.host ?? 'your site'}`}
+      />
+      {SOCIALS.map(({ href, label }) => (
+        <a href={href} target="_blank" rel="noopener noreferrer" class={link}>
+          {label}
+        </a>
+      ))}
+      <a href={LINKS.email} class={link}>
+        Email
+      </a>
+    </nav>
+
+    <p class="text-muted-foreground text-center text-xs md:pt-1 md:text-right">
+      {SITE.sourceUrl && (
+        <a
+          href={SITE.sourceUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-foreground underline-offset-4 transition-colors hover:underline"
+        >
+          Source
+        </a>
+      )}
+    </p>
+  </div>
+  <div class="text-foreground h-28 w-full sm:h-36 md:h-44 lg:h-52">
+    <FluidText text={SITE.title} width={2600} />
+  </div>
+</footer>

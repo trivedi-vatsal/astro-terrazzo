@@ -1,0 +1,45 @@
+---
+import { ThemeToggle, buttonClass } from '@terrazzo/ui'
+import { NAV, SITE } from '../config.ts'
+
+const pathname = Astro.url.pathname
+---
+
+<header class="bg-background/90 supports-[backdrop-filter]:bg-background/70 border-border/60 sticky top-0 z-50 w-full border-b backdrop-blur-md">
+  <div class="mx-auto flex h-14 w-full max-w-6xl items-center justify-between gap-2 px-3 sm:h-16 sm:px-4 md:px-6">
+    <a
+      href="/"
+      class="group flex shrink-0 items-center gap-2 font-semibold tracking-tight"
+      aria-label={`${SITE.title} home`}
+    >
+      <span class="border-foreground/20 group-hover:border-primary group-hover:text-primary flex h-9 w-9 items-center justify-center border font-mono text-sm transition-colors sm:h-8 sm:w-8">
+        {SITE.monogram}
+      </span>
+      <span class="sr-only sm:not-sr-only sm:inline-block sm:text-sm">
+        {SITE.title}
+      </span>
+    </a>
+
+    <nav
+      aria-label="Main navigation"
+      class="flex min-w-0 items-center gap-0.5 sm:gap-1"
+    >
+      {NAV.map((link) => {
+        const active = pathname.startsWith(link.href)
+        return (
+          <a
+            href={link.href}
+            aria-current={active ? 'page' : undefined}
+            class:list={[
+              buttonClass({ variant: 'ghost', size: 'nav' }),
+              active && 'bg-accent text-accent-foreground',
+            ]}
+          >
+            {link.label}
+          </a>
+        )
+      })}
+      <ThemeToggle />
+    </nav>
+  </div>
+</header>

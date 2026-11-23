@@ -1,0 +1,32 @@
+---
+import { ExperimentCard } from '@terrazzo/portfolio'
+import PageLayout from '../layouts/PageLayout.astro'
+import { PAGES } from '../config.ts'
+import { EXPERIMENTS } from '../data/experiments.ts'
+---
+
+<PageLayout
+  title={PAGES.experiments.title}
+  description={PAGES.experiments.description}
+>
+  <Fragment slot="header">
+    <h1 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+      {PAGES.experiments.title}
+    </h1>
+    <p class="text-muted-foreground mt-3 max-w-2xl text-base">
+      Tools and studies with a short page for each: what it does and how to use
+      it.
+    </p>
+  </Fragment>
+  <ul class="grid gap-6 lg:grid-cols-2 lg:gap-8">
+    {EXPERIMENTS.map((item, i) => (
+      <li>
+        <ExperimentCard
+          item={item}
+          index={i + 1}
+          href={`/experiments/${item.slug}/`}
+        />
+      </li>
+    ))}
+  </ul>
+</PageLayout>

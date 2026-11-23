@@ -1,0 +1,23 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { buttonClass, type ButtonOptions } from './button.ts'
+
+type Props = ButtonOptions &
+  HTMLAttributes<'button'> & {
+    /** Renders a link styled as a button. */
+    href?: string
+  }
+
+const { href, variant, size, class: className, ...rest } = Astro.props
+const classes = [buttonClass({ variant, size }), className]
+---
+
+{href ? (
+  <a href={href} class:list={classes} {...(rest as HTMLAttributes<'a'>)}>
+    <slot />
+  </a>
+) : (
+  <button type="button" class:list={classes} {...rest}>
+    <slot />
+  </button>
+)}

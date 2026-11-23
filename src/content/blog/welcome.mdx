@@ -1,0 +1,35 @@
+---
+title: 'Welcome to your new site'
+description: 'A quick tour of what this theme includes and the few files you edit to make it yours.'
+pubDate: 2026-10-20
+tags: ['guide', 'astro']
+---
+
+This site is a starting point for a personal portfolio and blog. Everything you see is sample content for a made-up person, Alex Morgan. Replace it and the site is yours.
+
+## What's on each page
+
+- **Home** is a bento grid: who you are, what you are working on now, a featured project, your stack, your latest post, and a way to reach you.
+- **About** has a longer bio, your stack as folders, a map of places, and a shelf of links.
+- **Work** shows your roles as a timeline grouped by company, followed by a few highlights.
+- **Experiments** lists side projects, each with its own detail page.
+- **Journal** is the blog. It groups posts by series, tag, or date, and has search, tag pages, and an RSS feed.
+
+## Where to edit
+
+| What you want to change | File                        |
+| ----------------------- | --------------------------- |
+| Name, links, navigation | `src/config.ts`             |
+| Home page tiles         | `src/data/home.ts`          |
+| About page              | `src/data/about.ts`         |
+| Work history            | `src/data/work.ts`          |
+| Side projects           | `src/data/experiments.ts`   |
+| Blog posts              | `src/content/blog/`         |
+| Colors and fonts        | `packages/ui/styles.css`    |
+| Your domain             | `site` in `astro.config.ts` |
+
+Every page also gets a share image, generated at build time from its title and description. You don't need to make them yourself.
+
+## Where the code lives
+
+Reusable components sit in `packages/`, split into four small libraries: `@terrazzo/ui`, `@terrazzo/blog`, `@terrazzo/seo`, and `@terrazzo/portfolio`. Pages import them like any other package. None of them need a framework, so the site ships almost no JavaScript.

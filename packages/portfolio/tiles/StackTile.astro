@@ -1,0 +1,111 @@
+---
+/**
+ * Grid of brand icons; hovering, focusing or tapping one shows what it is
+ * used for in the footer line.
+ */
+import { BrandIcon } from '@terrazzo/ui'
+import type { StackItem } from '../types.ts'
+
+interface Props {
+  items: StackItem[]
+  title?: string
+  /** Footer line when nothing is selected. */
+  caption?: string
+}
+
+const {
+  items,
+  title = 'My stack',
+  caption = 'The tools I know and reach for when I build.',
+} = Astro.props
+---
+
+<stack-tile
+  data-tile="stack"
+  class="bento-tile group tile-reveal order-6 col-span-1 flex min-h-[200px] flex-col justify-between p-5 sm:p-6 lg:order-7 lg:col-span-4"
+  style="animation-delay: 180ms"
+  role="group"
+  aria-label={title}
+>
+  <div>
+    <h2 class="text-foreground text-base font-semibold tracking-tight">
+      {title}
+    </h2>
+
+    <ul class="mt-4 grid grid-cols-4 gap-2.5 sm:gap-3">
+      {items.map((item, i) => (
+        <li>
+          <button
+            type="button"
+            class="bg-muted text-muted-foreground hover:bg-secondary hover:text-foreground focus-visible:ring-ring aria-pressed:bg-secondary aria-pressed:text-foreground flex aspect-square w-full items-center justify-center rounded-2xl transition-[color,background-color,transform] duration-200 focus-visible:ring-2 focus-visible:outline-none active:scale-[0.98]"
+            aria-pressed="false"
+            aria-label={item.name}
+            title={item.name}
+            data-name={item.name}
+            data-uses={item.useCases.join(' · ')}
+          >
+            <span
+              class="anim-icon-float bento-wake bento-wake-cell inline-flex size-[42%] max-h-8 max-w-8 items-center justify-center"
+              style={`animation-delay: ${i * 0.28}s; --wake-delay: ${i * 35}ms`}
+            >
+              <BrandIcon name={item.name} class="size-full" />
+            </span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <div
+    class="border-border/60 mt-5 min-h-[3.25rem] border-t pt-3"
+    aria-live="polite"
+  >
+    <p class="text-muted-foreground text-sm" data-caption>
+      {caption}
+    </p>
+    <div data-detail hidden>
+      <p class="text-foreground text-sm font-medium" data-detail-name></p>
+      <p
+        class="text-muted-foreground mt-0.5 font-mono text-[0.65rem] tracking-wide"
+        data-detail-uses
+      ></p>
+    </div>
+  </div>
+</stack-tile>
+
+<script>
+  class StackTile extends HTMLElement {
+    connectedCallback() {
+      const buttons = [
+        ...this.querySelectorAll<HTMLButtonElement>('[data-name]'),
+      ]
+      const caption = this.querySelector<HTMLElement>('[data-caption]')!
+      const detail = this.querySelector<HTMLElement>('[data-detail]')!
+      const name = this.querySelector('[data-detail-name]')!
+      const uses = this.querySelector('[data-detail-uses]')!
+
+      let selected: HTMLButtonElement | undefined
+      const show = (button?: HTMLButtonElement) => {
+        caption.hidden = Boolean(button)
+        detail.hidden = !button
+        if (!button) return
+        name.textContent = button.dataset.name ?? ''
+        uses.textContent = button.dataset.uses || 'Part of my everyday toolkit'
+      }
+
+      for (const button of buttons) {
+        button.addEventListener('click', () => {
+          selected = selected === button ? undefined : button
+          for (const b of buttons)
+            b.setAttribute('aria-pressed', String(b === selected))
+          show(selected ?? button)
+        })
+        button.addEventListener('mouseenter', () => show(button))
+        button.addEventListener('focus', () => show(button))
+        button.addEventListener('mouseleave', () => show(selected))
+        button.addEventListener('blur', () => show(selected))
+      }
+    }
+  }
+  customElements.define('stack-tile', StackTile)
+</script>

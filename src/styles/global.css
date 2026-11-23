@@ -1,0 +1,4 @@
+@import 'tailwindcss';
+@import '../../packages/ui/styles.css';
+@import '../../packages/ui/bento.css';
+@import '../../packages/blog/styles.css';

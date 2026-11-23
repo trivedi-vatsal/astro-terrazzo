@@ -1,0 +1,315 @@
+---
+/**
+ * Post index with grouping (series, category, date), three layouts, search and
+ * tag chips. The initial state renders at build time; the <blog-explorer>
+ * element re-renders from the embedded JSON and keeps the URL in sync
+ * (?view=, ?layout=, ?search=).
+ */
+import { Icon, chipClass } from '@terrazzo/ui'
+import { buildSeriesCatalog, getAllTags, type BlogPostSummary } from './lib.ts'
+import { buildLanes, renderLanes, type BlogView } from './render.ts'
+
+interface Props {
+  posts: BlogPostSummary[]
+  /** Tag slug for tag pages; fixes the view to date and hides the chips. */
+  initialTag?: string
+  hideViewToggle?: boolean
+}
+
+const { posts, initialTag, hideViewToggle = Boolean(initialTag) } = Astro.props
+
+const CHIP_LIMIT = 10
+const hasSeries = posts.some((post) => post.series)
+const defaultView: BlogView = initialTag
+  ? 'date'
+  : hasSeries
+    ? 'series'
+    : 'category'
+const tags = initialTag ? [] : getAllTags(posts)
+const lanes = renderLanes(
+  buildLanes(posts, { view: defaultView, search: '', tag: initialTag }),
+  'list',
+  buildSeriesCatalog(posts),
+)
+
+const toggle =
+  'inline-flex h-9 items-center gap-1.5 rounded-md px-3 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none not-aria-pressed:hover:bg-accent not-aria-pressed:hover:text-accent-foreground aria-pressed:bg-background aria-pressed:text-foreground aria-pressed:shadow-sm'
+const group = 'border-border bg-muted/40 inline-flex rounded-md border p-0.5'
+const views = [
+  { value: 'series', label: 'Series' },
+  { value: 'category', label: 'Category' },
+  { value: 'date', label: 'Date' },
+]
+const layouts = [
+  { value: 'list', label: 'List', icon: 'list' },
+  { value: 'grid', label: 'Grid', icon: 'layout-grid' },
+  { value: 'compact', label: 'Compact', icon: 'rows' },
+] as const
+---
+
+<blog-explorer
+  class="flex flex-col gap-6"
+  data-default-view={defaultView}
+  data-tag={initialTag}
+  data-fixed-view={hideViewToggle ? '' : undefined}
+>
+  {posts.length === 0 ? (
+    <p class="text-muted-foreground">No posts yet.</p>
+  ) : (
+    <>
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-wrap items-center gap-2">
+          {!hideViewToggle && (
+            <div role="group" aria-label="Group posts by" class={group}>
+              {views.map(({ value, label }) => (
+                <button
+                  type="button"
+                  class={toggle}
+                  data-view={value}
+                  aria-pressed={value === defaultView}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          )}
+          <div role="group" aria-label="Post layout" class={group}>
+            {layouts.map(({ value, label, icon }) => (
+              <button
+                type="button"
+                class={toggle}
+                data-layout={value}
+                aria-pressed={value === 'list'}
+              >
+                <Icon name={icon} class="size-3.5" />
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <label class="relative block">
+          <span class="sr-only">Search posts</span>
+          <Icon
+            name="search"
+            class="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2"
+          />
+          <input
+            type="search"
+            placeholder="Search"
+            data-search
+            class="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring w-full rounded-md border py-2 pr-3 pl-9 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+          />
+        </label>
+      </div>
+
+      {tags.length > 0 && (
+        <div
+          class="flex flex-wrap gap-2"
+          role="group"
+          aria-label="Filter by tag"
+        >
+          {tags.map(({ tag, slug, count }, i) => (
+            <button
+              type="button"
+              class={chipClass}
+              data-tag-chip={slug}
+              data-tag-label={tag}
+              aria-pressed="false"
+              hidden={i >= CHIP_LIMIT}
+            >
+              {tag}
+              <span class="tabular-nums opacity-60">{count}</span>
+            </button>
+          ))}
+          {tags.length > CHIP_LIMIT && (
+            <button
+              type="button"
+              class="hover:bg-accent h-8 rounded-md px-3 text-xs font-medium"
+              data-more
+              aria-expanded="false"
+            >
+              +{tags.length - CHIP_LIMIT}
+            </button>
+          )}
+        </div>
+      )}
+
+      <div data-lanes class="flex flex-col" set:html={lanes} />
+
+      {!initialTag && (
+        <p class="text-muted-foreground text-sm" data-tag-note hidden>
+          Showing tag <a href="/blog/" class="text-primary hover:underline"></a>
+          .
+          <button type="button" class="text-primary hover:underline" data-clear>
+            Clear filter
+          </button>
+        </p>
+      )}
+
+      <script
+        type="application/json"
+        data-posts
+        set:html={JSON.stringify(posts).replaceAll('<', '\\u003c')}
+      />
+    </>
+  )}
+</blog-explorer>
+
+<script>
+  import { buildSeriesCatalog, tagHref, type BlogPostSummary } from './lib.ts'
+  import {
+    buildLanes,
+    renderLanes,
+    type BlogLayout,
+    type BlogView,
+    type ExplorerState,
+  } from './render.ts'
+
+  const VIEWS: BlogView[] = ['series', 'category', 'date']
+  const LAYOUTS: BlogLayout[] = ['list', 'grid', 'compact']
+  const CHIP_LIMIT = 10
+
+  class BlogExplorer extends HTMLElement {
+    connectedCallback() {
+      const data = this.querySelector('[data-posts]')
+      const lanes = this.querySelector<HTMLElement>('[data-lanes]')
+      if (!data || !lanes) return
+
+      const posts: BlogPostSummary[] = JSON.parse(data.textContent ?? '[]')
+      const catalog = buildSeriesCatalog(posts)
+      const fixedTag = this.dataset.tag
+      const fixedView = this.hasAttribute('data-fixed-view')
+      const defaultView = this.dataset.defaultView as BlogView
+      const params = new URLSearchParams(location.search)
+      const pick = <T extends string>(
+        value: string | null,
+        list: T[],
+        or: T,
+      ) => (list.includes(value as T) ? (value as T) : or)
+      const chipTag = (value: string | null) =>
+        value && this.querySelector(`[data-tag-chip="${CSS.escape(value)}"]`)
+          ? value
+          : undefined
+
+      const state: ExplorerState = {
+        view: fixedView
+          ? defaultView
+          : pick(params.get('view'), VIEWS, defaultView),
+        layout: pick(params.get('layout'), LAYOUTS, 'list'),
+        search: params.get('search') ?? '',
+        tag: fixedTag ?? chipTag(params.get('tag')),
+      }
+
+      const search = this.querySelector<HTMLInputElement>('[data-search]')
+      const note = this.querySelector<HTMLElement>('[data-tag-note]')
+      if (search) search.value = state.search
+
+      const render = () => {
+        lanes.innerHTML = renderLanes(
+          buildLanes(posts, state),
+          state.layout,
+          catalog,
+        )
+
+        for (const el of this.querySelectorAll<HTMLElement>('[data-view]'))
+          el.setAttribute(
+            'aria-pressed',
+            String(el.dataset.view === state.view),
+          )
+        for (const el of this.querySelectorAll<HTMLElement>('[data-layout]'))
+          el.setAttribute(
+            'aria-pressed',
+            String(el.dataset.layout === state.layout),
+          )
+        for (const el of this.querySelectorAll<HTMLElement>('[data-tag-chip]'))
+          el.setAttribute(
+            'aria-pressed',
+            String(el.dataset.tagChip === state.tag),
+          )
+
+        if (note && !fixedTag) {
+          const chip = this.querySelector<HTMLElement>(
+            `[data-tag-chip="${state.tag}"]`,
+          )
+          note.hidden = !state.tag
+          const link = note.querySelector('a')
+          if (link && state.tag) {
+            link.href = tagHref(state.tag)
+            link.textContent = chip?.dataset.tagLabel ?? state.tag
+          }
+        }
+
+        const query = new URLSearchParams(location.search)
+        const set = (key: string, value: string, fallback: string) =>
+          value && value !== fallback
+            ? query.set(key, value)
+            : query.delete(key)
+        if (!fixedView) set('view', state.view, defaultView)
+        set('layout', state.layout, 'list')
+        set('search', state.search.trim(), '')
+        if (!fixedTag) set('tag', state.tag ?? '', '')
+        const qs = query.toString()
+        history.replaceState(
+          history.state,
+          '',
+          `${location.pathname}${qs ? `?${qs}` : ''}${location.hash}`,
+        )
+      }
+
+      this.addEventListener('click', (event) => {
+        const target = (event.target as Element).closest<HTMLElement>('button')
+        if (!target || !this.contains(target)) return
+        const { view, layout, tagChip } = target.dataset
+        if (view) state.view = view as BlogView
+        else if (layout) state.layout = layout as BlogLayout
+        else if (tagChip)
+          state.tag = state.tag === tagChip ? undefined : tagChip
+        else if (target.hasAttribute('data-clear')) state.tag = undefined
+        else if (target.hasAttribute('data-more')) {
+          const open = target.getAttribute('aria-expanded') !== 'true'
+          target.setAttribute('aria-expanded', String(open))
+          target.textContent = open
+            ? 'Show less'
+            : `+${this.querySelectorAll('[data-tag-chip]').length - CHIP_LIMIT}`
+          this.querySelectorAll<HTMLElement>('[data-tag-chip]').forEach(
+            (chip, i) => {
+              chip.hidden = !open && i >= CHIP_LIMIT
+            },
+          )
+          return
+        } else return
+        render()
+      })
+
+      search?.addEventListener('input', () => {
+        state.search = search.value
+        render()
+      })
+
+      if (
+        state.view !== defaultView ||
+        state.layout !== 'list' ||
+        state.search ||
+        state.tag !== fixedTag
+      )
+        render()
+    }
+  }
+  customElements.define('blog-explorer', BlogExplorer)
+</script>
+
+<style is:global>
+  @keyframes lane-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.5rem);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .lane-in {
+      animation: lane-in 0.3s ease-out;
+    }
+  }
+</style>

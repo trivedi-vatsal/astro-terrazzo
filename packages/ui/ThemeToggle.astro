@@ -1,0 +1,48 @@
+---
+import Icon from './Icon.astro'
+import { buttonClass } from './button.ts'
+---
+
+<theme-toggle>
+  <button
+    type="button"
+    class:list={[
+      buttonClass({ variant: 'ghost', size: 'icon-sm' }),
+      'shrink-0',
+    ]}
+    aria-label="Toggle dark mode"
+  >
+    <Icon name="moon" class="size-4 dark:hidden" />
+    <Icon name="sun" class="hidden size-4 dark:block" />
+  </button>
+</theme-toggle>
+
+<script>
+  class ThemeToggle extends HTMLElement {
+    connectedCallback() {
+      const button = this.querySelector('button')
+      if (!button) return
+      const root = document.documentElement
+      const label = () =>
+        button.setAttribute(
+          'aria-label',
+          root.classList.contains('dark')
+            ? 'Switch to light mode'
+            : 'Switch to dark mode',
+        )
+      label()
+      matchMedia('(prefers-color-scheme: dark)').addEventListener(
+        'change',
+        () => requestAnimationFrame(label),
+      )
+      button.addEventListener('click', () => {
+        const dark = root.classList.toggle('dark')
+        try {
+          localStorage.setItem('theme', dark ? 'dark' : 'light')
+        } catch {}
+        label()
+      })
+    }
+  }
+  customElements.define('theme-toggle', ThemeToggle)
+</script>

@@ -1,0 +1,24 @@
+---
+/** Standard inner page: a header block (slot="header") above the content. */
+import { Container } from '@terrazzo/ui'
+import BaseLayout from './BaseLayout.astro'
+
+type Props = Parameters<typeof BaseLayout>[0]
+
+const props = Astro.props
+---
+
+<BaseLayout {...props}>
+  <slot name="head" slot="head" />
+  <main
+    class="flex min-h-[calc(100dvh-8rem)] flex-auto flex-col"
+    transition:animate="fade"
+  >
+    <Container class="py-5">
+      <slot name="header" />
+    </Container>
+    <Container class="flex-1 py-5">
+      <slot />
+    </Container>
+  </main>
+</BaseLayout>

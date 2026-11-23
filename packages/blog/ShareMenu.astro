@@ -1,0 +1,125 @@
+---
+/**
+ * Share button with copy link, X, LinkedIn and (when supported) the native
+ * share sheet. Uses the Popover API for dismissal; arrow keys move between
+ * items.
+ */
+import { Icon, buttonClass } from '@terrazzo/ui'
+
+interface Props {
+  title: string
+  /** Absolute URL to share. */
+  url: string
+}
+
+const { title, url } = Astro.props
+const encoded = encodeURIComponent(url)
+const menuId = 'share-menu'
+const item =
+  'hover:bg-accent focus:bg-accent focus:text-accent-foreground flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none select-none [&_svg]:size-4 [&_svg]:shrink-0'
+---
+
+<share-menu data-title={title} data-url={url}>
+  <button
+    type="button"
+    class={buttonClass({ variant: 'outline', size: 'icon-sm' })}
+    aria-label="Share post"
+    aria-haspopup="menu"
+    popovertarget={menuId}
+  >
+    <Icon name="share" />
+  </button>
+  <div
+    id={menuId}
+    popover
+    role="menu"
+    class="bg-popover text-popover-foreground inset-auto m-0 min-w-[8rem] rounded-md border p-1 shadow-md"
+  >
+    <button type="button" role="menuitem" class={item} data-copy>
+      <Icon name="link" /> Copy link
+    </button>
+    <a
+      role="menuitem"
+      class={item}
+      href={`https://x.com/intent/tweet?url=${encoded}`}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+        <path d="m22.991 23-8.533-12.612L22.42 1h-2.77l-6.422 7.575L8.105 1H1.123l8.225 12.158L1 23h2.77l6.81-8.03L16.015 23H23zM7.193 2.769l12.49 18.462h-2.76L4.43 2.769z"></path>
+      </svg>
+      Share on X
+    </a>
+    <a
+      role="menuitem"
+      class={item}
+      href={`https://www.linkedin.com/sharing/share-offsite?url=${encoded}`}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+        <path d="M22.274 0H1.728C.692 0 0 .685 0 1.715v20.569C0 23.316.864 24 1.727 24h20.546C23.31 24 24 23.315 24 22.285V1.716C24.001.684 23.31 0 22.274 0M7.08 20.4H3.454V8.915h3.625zM5.352 7.371c-1.209 0-2.07-.856-2.07-2.056s.863-2.059 2.07-2.059c1.21 0 2.073.859 2.073 2.059S6.388 7.37 5.352 7.37M20.548 20.4h-3.626v-5.485c0-1.371 0-3.087-1.9-3.087-1.898 0-2.073 1.372-2.073 2.916V20.4H9.325V8.915h3.454v1.541c.69-1.2 2.073-1.885 3.453-1.885 3.627 0 4.316 2.4 4.316 5.485z"></path>
+      </svg>
+      Share on LinkedIn
+    </a>
+    <button type="button" role="menuitem" class={item} data-native hidden>
+      <Icon name="ellipsis" /> Other app
+    </button>
+  </div>
+</share-menu>
+
+<script>
+  import { toast } from '@terrazzo/ui/toast'
+
+  class ShareMenu extends HTMLElement {
+    connectedCallback() {
+      const trigger = this.querySelector<HTMLButtonElement>('[popovertarget]')
+      const menu = this.querySelector<HTMLElement>('[popover]')
+      if (!trigger || !menu) return
+      const { title = '', url = '' } = this.dataset
+      const items = () =>
+        [...menu.querySelectorAll<HTMLElement>('[role=menuitem]')].filter(
+          (el) => !el.hidden,
+        )
+
+      const native = menu.querySelector<HTMLElement>('[data-native]')
+      if (native && 'share' in navigator) native.hidden = false
+
+      // The menu sits in the top layer, so place it under the trigger by hand.
+      menu.addEventListener('toggle', (event) => {
+        if ((event as ToggleEvent).newState !== 'open') return
+        const box = trigger.getBoundingClientRect()
+        menu.style.position = 'fixed'
+        menu.style.top = `${box.bottom + 4}px`
+        menu.style.left = `${Math.max(16, box.right - menu.offsetWidth + 6)}px`
+        items()[0]?.focus()
+      })
+
+      menu.addEventListener('keydown', (event) => {
+        const list = items()
+        const index = list.indexOf(document.activeElement as HTMLElement)
+        const move = { ArrowDown: 1, ArrowUp: -1 }[event.key]
+        if (!move) return
+        event.preventDefault()
+        list[(index + move + list.length) % list.length]?.focus()
+      })
+
+      menu.addEventListener('click', async (event) => {
+        const target = (event.target as Element).closest('[role=menuitem]')
+        if (!target) return
+        menu.hidePopover()
+        if (target.hasAttribute('data-copy')) {
+          try {
+            await navigator.clipboard.writeText(url)
+            toast('Link copied')
+          } catch {
+            toast('Could not copy the link')
+          }
+        } else if (target.hasAttribute('data-native')) {
+          navigator.share({ title, url }).catch(() => {})
+        }
+      })
+    }
+  }
+  customElements.define('share-menu', ShareMenu)
+</script>

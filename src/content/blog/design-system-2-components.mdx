@@ -1,0 +1,36 @@
+---
+title: 'Building a small design system, part 2: Components'
+description: 'Components that read tokens, keep their state in attributes, and work without a framework.'
+pubDate: 2026-09-24
+tags: ['design systems', 'accessibility']
+series:
+  slug: small-design-system
+  title: 'Building a small design system'
+  part: 2
+---
+
+With tokens in place, components become thin: markup, a few classes that read the tokens, and as little script as you can get away with.
+
+## Let the platform do the work
+
+Before writing a script, check whether HTML already covers it:
+
+- `<details>` and `<summary>` give you a disclosure with keyboard support.
+- `<dialog>` gives you a modal with focus handling and Escape to close.
+- The `popover` attribute gives you menus that close when you click outside.
+
+Each one you use is code you don't have to maintain.
+
+## Keep state in attributes
+
+When a component does need a script, store its state where CSS can see it:
+
+```html
+<button aria-pressed="true" class="aria-pressed:bg-primary">Grid</button>
+```
+
+The script only flips `aria-pressed`. The styles follow, and screen readers announce the state for free.
+
+## Test the boring parts
+
+Write a small test for every function that makes a decision, like sorting or filtering. The parts you can see you will check by eye anyway.

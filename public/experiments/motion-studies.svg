@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1160">
+<rect width="800" height="1160" fill="#f6f1ea"/>
+<rect x="64" y="72" width="240" height="28" rx="8" fill="#1c1814"/>
+<rect x="64" y="118" width="380" height="14" rx="7" fill="#d9cfc2"/>
+<rect x="64" y="190" width="324" height="380" rx="24" fill="#fff" stroke="#d9cfc2" stroke-width="2"/>
+<g transform="translate(76 230)"><path d="M0 300 C 120 300, 160 0, 300 0" fill="none" stroke="#efe6da" stroke-width="2" stroke-dasharray="6 8" transform="translate(0 0)"/></g>
+<g transform="translate(76 230)"><path d="M0 300 C 120 300, 160 0, 300 0" fill="none" stroke="#d4692a" stroke-width="6" stroke-linecap="round"/></g>
+<circle cx="376" cy="230" r="12" fill="#d4692a"/>
+<rect x="88" y="530" width="140" height="14" rx="7" fill="#d9cfc2"/>
+<rect x="412" y="190" width="324" height="380" rx="24" fill="#fff" stroke="#d9cfc2" stroke-width="2"/>
+<g transform="translate(424 230)"><path d="M0 300 C 60 0, 240 300, 300 0" fill="none" stroke="#efe6da" stroke-width="2" stroke-dasharray="6 8" transform="translate(0 0)"/></g>
+<g transform="translate(424 230)"><path d="M0 300 C 60 0, 240 300, 300 0" fill="none" stroke="#1c1814" stroke-width="6" stroke-linecap="round"/></g>
+<circle cx="724" cy="230" r="12" fill="#d4692a"/>
+<rect x="436" y="530" width="140" height="14" rx="7" fill="#d9cfc2"/>
+<rect x="64" y="610" width="324" height="380" rx="24" fill="#fff" stroke="#d9cfc2" stroke-width="2"/>
+<g transform="translate(76 650)"><path d="M0 300 C 0 120, 180 0, 300 0" fill="none" stroke="#efe6da" stroke-width="2" stroke-dasharray="6 8" transform="translate(0 0)"/></g>
+<g transform="translate(76 650)"><path d="M0 300 C 0 120, 180 0, 300 0" fill="none" stroke="#d4692a" stroke-width="6" stroke-linecap="round"/></g>
+<circle cx="376" cy="650" r="12" fill="#d4692a"/>
+<rect x="88" y="950" width="140" height="14" rx="7" fill="#d9cfc2"/>
+<rect x="412" y="610" width="324" height="380" rx="24" fill="#fff" stroke="#d9cfc2" stroke-width="2"/>
+<g transform="translate(424 650)"><path d="M0 300 C 200 300, 100 0, 300 0" fill="none" stroke="#efe6da" stroke-width="2" stroke-dasharray="6 8" transform="translate(0 0)"/></g>
+<g transform="translate(424 650)"><path d="M0 300 C 200 300, 100 0, 300 0" fill="none" stroke="#1c1814" stroke-width="6" stroke-linecap="round"/></g>
+<circle cx="724" cy="650" r="12" fill="#d4692a"/>
+<rect x="436" y="950" width="140" height="14" rx="7" fill="#d9cfc2"/>
+<rect x="64" y="1030" width="672" height="60" rx="30" fill="#1c1814"/>
+<circle cx="300" cy="1060" r="18" fill="#d4692a"/>
+</svg>

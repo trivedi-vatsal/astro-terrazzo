@@ -1,0 +1,58 @@
+---
+/** Card surface for the bento grid. Renders a link when `href` is set. */
+interface Props {
+  class?: string
+  href?: string
+  external?: boolean
+  id?: string
+  /** Accessible name for the tile. */
+  label?: string
+  /** Hook for page-level layout, e.g. `[data-tile='stack']`. */
+  tile?: string
+  /** Entrance animation delay in ms. */
+  delay?: number
+  as?: 'article' | 'div' | 'section'
+}
+
+const {
+  class: className,
+  href,
+  external = false,
+  id,
+  label,
+  tile,
+  delay = 0,
+  as: Tag = 'article',
+} = Astro.props
+
+const classes = ['bento-tile group tile-reveal', className]
+const style = delay ? `animation-delay: ${delay}ms` : undefined
+---
+
+{href ? (
+  <a
+    href={href}
+    id={id}
+    aria-label={label}
+    data-tile={tile}
+    class:list={[
+      classes,
+      'focus-visible:ring-ring block focus-visible:ring-2 focus-visible:outline-none',
+    ]}
+    style={style}
+    target={external ? '_blank' : undefined}
+    rel={external ? 'noopener noreferrer' : undefined}
+  >
+    <slot />
+  </a>
+) : (
+  <Tag
+    id={id}
+    aria-label={label}
+    data-tile={tile}
+    class:list={classes}
+    style={style}
+  >
+    <slot />
+  </Tag>
+)}

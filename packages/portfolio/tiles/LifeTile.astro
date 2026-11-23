@@ -1,0 +1,50 @@
+---
+import { Icon } from '@terrazzo/ui'
+import BentoTile from './BentoTile.astro'
+import type { IconLink } from '../types.ts'
+
+interface Props {
+  title: string
+  interests: IconLink[]
+  caption: string
+}
+
+const { title, interests, caption } = Astro.props
+---
+
+<BentoTile
+  tile="life"
+  class="order-8 col-span-1 flex min-h-[240px] flex-col justify-between overflow-hidden p-5 sm:p-6 lg:order-9 lg:col-span-4"
+  delay={220}
+  label={title}
+>
+  <div class="relative z-10">
+    <h2 class="bento-wake bento-wake-title text-xl font-semibold tracking-tight">
+      {title}
+    </h2>
+    <ul class="mt-5 grid grid-cols-2 gap-3">
+      {interests.map((interest, i) => (
+        <li>
+          <a
+            href={interest.href}
+            target={interest.external ? '_blank' : undefined}
+            rel={interest.external ? 'noopener noreferrer' : undefined}
+            class="hover:text-primary bento-wake bento-wake-up flex items-start gap-2.5 text-lg font-medium tracking-tight transition-colors sm:text-xl"
+            style={`--wake-delay: ${i * 40}ms`}
+          >
+            <span class="text-primary/80 mt-1 inline-flex size-7 shrink-0 items-center justify-center">
+              <Icon name={interest.icon} class="size-5" strokeWidth={1.5} />
+            </span>
+            <span>{interest.label}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <div
+    class="bg-primary/10 anim-breathe pointer-events-none absolute -right-6 -bottom-10 h-40 w-40 rounded-full opacity-60 blur-2xl transition-[opacity,transform] duration-500 group-hover:scale-110 group-hover:opacity-90"
+    aria-hidden="true"
+  ></div>
+  <p class="text-muted-foreground relative z-10 mt-6 text-sm">{caption}</p>
+</BentoTile>

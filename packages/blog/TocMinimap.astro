@@ -1,0 +1,97 @@
+---
+/**
+ * Desktop table of contents: a column of dashes that marks the heading in
+ * view, and opens into the full list on hover or keyboard focus.
+ */
+import type { TocItem } from './TocInline.astro'
+
+interface Props {
+  items: TocItem[]
+}
+
+const { items } = Astro.props
+---
+
+{items.length > 0 && (
+  <toc-minimap class="group/toc relative ml-auto block w-18">
+    <div
+      class="flex max-h-[50dvh] cursor-default flex-col gap-3 overflow-hidden py-3 pl-6 transition-opacity duration-200 group-focus-within/toc:opacity-0 group-hover/toc:opacity-0"
+      aria-hidden="true"
+    >
+      {items.map((item) => (
+        <span
+          data-id={item.url.slice(1)}
+          data-depth={item.depth}
+          class="bg-ring/50 data-active:bg-foreground h-0.5 w-6 shrink-0 rounded-xs transition-[background-color] duration-200 data-[depth=3]:ml-2 data-[depth=3]:w-4 data-[depth=4]:ml-4 data-[depth=4]:w-2"
+        />
+      ))}
+    </div>
+
+    <div class="pointer-events-none absolute top-1/2 right-full -translate-y-1/2 scale-95 pr-3 opacity-0 transition-[opacity,scale] duration-150 group-focus-within/toc:pointer-events-auto group-focus-within/toc:scale-100 group-focus-within/toc:opacity-100 group-hover/toc:pointer-events-auto group-hover/toc:scale-100 group-hover/toc:opacity-100">
+      <nav
+        aria-label="Table of contents"
+        class="bg-popover text-popover-foreground w-56 overflow-hidden rounded-md border shadow-md"
+      >
+        <ul class="flex max-h-[50dvh] flex-col overflow-y-auto overscroll-contain px-6 py-4 text-sm">
+          {items.map((item) => (
+            <li class="flex py-1">
+              <a
+                href={item.url}
+                data-id={item.url.slice(1)}
+                data-depth={item.depth}
+                class="text-muted-foreground hover:text-foreground data-active:text-foreground line-clamp-2 w-full transition-[color] duration-200 data-[depth=3]:pl-4 data-[depth=4]:pl-8"
+              >
+                {item.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  </toc-minimap>
+)}
+
+<script>
+  import { playSound } from '@terrazzo/ui/sound'
+  import { minimapOpenSound } from './sound.ts'
+
+  class TocMinimap extends HTMLElement {
+    onScroll?: () => void
+
+    connectedCallback() {
+      const marks = [...this.querySelectorAll<HTMLElement>('[data-id]')]
+      const headings = [...new Set(marks.map((mark) => mark.dataset.id!))]
+        .map((id) => document.getElementById(id))
+        .filter((heading) => heading !== null)
+
+      // Active = last heading above the top 20% of the viewport, or the
+      // final one once the page can't scroll further.
+      const update = () => {
+        frame = 0
+        const line = innerHeight * 0.2
+        let active = headings.findLast(
+          (heading) => heading.getBoundingClientRect().top <= line,
+        )
+        const end = document.documentElement.scrollHeight - innerHeight - 2
+        if (scrollY > 0 && scrollY >= end) active = headings.at(-1)
+        for (const mark of marks)
+          mark.toggleAttribute('data-active', mark.dataset.id === active?.id)
+      }
+      let frame = 0
+      this.onScroll = () => {
+        frame ||= requestAnimationFrame(update)
+      }
+      addEventListener('scroll', this.onScroll, { passive: true })
+      update()
+
+      this.addEventListener('pointerenter', () =>
+        playSound(minimapOpenSound, 0.3),
+      )
+    }
+
+    disconnectedCallback() {
+      if (this.onScroll) removeEventListener('scroll', this.onScroll)
+    }
+  }
+  customElements.define('toc-minimap', TocMinimap)
+</script>

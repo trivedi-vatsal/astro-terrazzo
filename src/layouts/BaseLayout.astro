@@ -1,0 +1,96 @@
+---
+import '../styles/global.css'
+import { ClientRouter } from 'astro:transitions'
+import { Analytics, Head, formatTitle, siteJsonLd } from '@terrazzo/seo'
+import { ThemeScript } from '@terrazzo/ui'
+import Footer from '../components/Footer.astro'
+import Header from '../components/Header.astro'
+import { SITE, SOCIALS } from '../config.ts'
+
+interface Props {
+  title?: string | undefined
+  description?: string | undefined
+  /** Absolute share image URL; defaults to the generated /og/ image. */
+  image?: string | undefined
+  noindex?: boolean
+  type?: 'website' | 'article'
+  publishedTime?: Date
+  modifiedTime?: Date
+  author?: string
+  jsonLd?: object[]
+}
+
+const {
+  title,
+  description = SITE.description,
+  image,
+  noindex,
+  type,
+  publishedTime,
+  modifiedTime,
+  author,
+  jsonLd = [],
+} = Astro.props
+
+const site = Astro.site!
+const analyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID
+---
+
+<html lang={SITE.lang}>
+  <head>
+    <Head
+      title={formatTitle(title, SITE.title)}
+      description={description}
+      siteName={SITE.title}
+      image={image}
+      noindex={noindex}
+      type={type}
+      publishedTime={publishedTime}
+      modifiedTime={modifiedTime}
+      author={author}
+      jsonLd={[
+        siteJsonLd({
+          site,
+          name: SITE.title,
+          description: SITE.description,
+          lang: SITE.lang,
+          person: {
+            name: SITE.author,
+            jobTitle: SITE.jobTitle,
+            sameAs: SOCIALS.map((social) => social.href),
+          },
+        }),
+        ...jsonLd,
+      ]}
+    />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${SITE.title} RSS`}
+      href={new URL('rss.xml', site)}
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <ThemeScript />
+    <ClientRouter />
+    {analyticsId && <Analytics id={analyticsId} />}
+    <slot name="head" />
+  </head>
+  <body class="bg-background min-h-dvh font-sans antialiased">
+    <a
+      href="#main-content"
+      class="focus:bg-primary focus:text-primary-foreground sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:rounded-md focus:px-4 focus:py-2"
+    >
+      Skip to main content
+    </a>
+    <div class="flex flex-col items-center justify-center">
+      <Header />
+      <div id="main-content" class="w-full">
+        <slot />
+      </div>
+      <Footer />
+    </div>
+  </body>
+</html>

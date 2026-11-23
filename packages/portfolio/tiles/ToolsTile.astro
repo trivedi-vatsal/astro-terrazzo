@@ -1,0 +1,42 @@
+---
+import { BrandIcon } from '@terrazzo/ui'
+import BentoTile from './BentoTile.astro'
+
+interface Props {
+  title: string
+  description: string
+  /** Names from @terrazzo/ui brands; unknown names show a monogram. */
+  tools: string[]
+}
+
+const { title, description, tools } = Astro.props
+---
+
+<BentoTile
+  tile="tools"
+  class="order-7 col-span-1 flex min-h-[220px] flex-col justify-between p-5 sm:p-6 lg:order-8 lg:col-span-3"
+  delay={200}
+  label={title}
+>
+  <div>
+    <h2 class="bento-wake bento-wake-title text-2xl leading-none font-semibold tracking-tight">
+      {title}
+    </h2>
+    <p class="text-muted-foreground mt-2 text-sm leading-relaxed">
+      {description}
+    </p>
+  </div>
+
+  <ul class="mt-5 grid grid-cols-4 gap-3">
+    {tools.map((tool, i) => (
+      <li
+        class="border-border/70 bg-secondary/45 hover:bg-secondary bento-wake bento-wake-cell flex aspect-square items-center justify-center rounded-xl border transition-colors"
+        style={`--wake-delay: ${i * 40}ms`}
+        title={tool}
+      >
+        <span class="sr-only">{tool}</span>
+        <BrandIcon name={tool} class="size-7" colored />
+      </li>
+    ))}
+  </ul>
+</BentoTile>

@@ -1,0 +1,146 @@
+---
+/** Links shown as book spines on a shelf, filterable by category. */
+import type { ShelfItem } from './types.ts'
+
+interface Props {
+  items: ShelfItem[]
+  title?: string
+}
+
+const { items, title = 'Shelf' } = Astro.props
+
+const filters = [
+  { id: 'all', label: 'All' },
+  { id: 'build', label: 'Build' },
+  { id: 'craft', label: 'Craft' },
+  { id: 'life', label: 'Life' },
+]
+
+// Warm / ink / paper covers, cycled across the shelf.
+const covers = [
+  ['bg-[#1c1814] text-[#f4efe8]', 'bg-[#c56a32]', 'h-[11.5rem] sm:h-[13.5rem]'],
+  ['bg-[#c56a32] text-[#fff7ef]', 'bg-[#1c1814]', 'h-[12.5rem] sm:h-[14.5rem]'],
+  ['bg-[#efe6da] text-[#1c1814]', 'bg-[#c56a32]', 'h-[10.5rem] sm:h-[12.5rem]'],
+  ['bg-[#2a221c] text-[#f4efe8]', 'bg-[#efe6da]', 'h-[13rem] sm:h-[15rem]'],
+  ['bg-[#d9c4ae] text-[#1c1814]', 'bg-[#1c1814]', 'h-[11rem] sm:h-[13rem]'],
+  ['bg-[#c56a32] text-[#fff7ef]', 'bg-[#efe6da]', 'h-[12rem] sm:h-[14rem]'],
+  [
+    'bg-[#1c1814] text-[#efe6da]',
+    'bg-[#c56a32]',
+    'h-[10.75rem] sm:h-[12.75rem]',
+  ],
+  [
+    'bg-[#efe6da] text-[#1c1814]',
+    'bg-[#2a221c]',
+    'h-[12.25rem] sm:h-[14.25rem]',
+  ],
+]
+---
+
+<shelf-filter class="block space-y-10" aria-label={title} role="region">
+  <div class="flex flex-wrap items-baseline justify-between gap-4">
+    <div class="flex items-baseline gap-3">
+      <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">{title}</h2>
+      <span class="text-muted-foreground font-mono text-xs" aria-hidden="true">
+        →
+      </span>
+    </div>
+    <div
+      class="flex flex-wrap gap-x-4 gap-y-2"
+      role="group"
+      aria-label="Filter the shelf"
+    >
+      {filters.map((filter) => (
+        <button
+          type="button"
+          data-filter={filter.id}
+          aria-pressed={filter.id === 'all'}
+          class="text-muted-foreground hover:text-foreground aria-pressed:text-foreground font-mono text-[0.65rem] tracking-[0.14em] uppercase underline-offset-4 transition-colors aria-pressed:underline"
+        >
+          {filter.label}
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <div class="relative">
+    <ul class="flex items-end gap-2 overflow-x-auto px-1 pt-10 pb-0 sm:gap-3 sm:px-2">
+      {items.map((item, index) => {
+        const [face, stripe, height] = covers[index % covers.length]
+        return (
+          <li class="shrink-0" data-category={item.category}>
+            <a
+              href={item.href}
+              target={item.external ? '_blank' : undefined}
+              rel={item.external ? 'noopener noreferrer' : undefined}
+              class:list={[
+                'group relative block origin-bottom transition-transform duration-300 ease-out hover:-translate-y-3 focus-visible:-translate-y-3',
+                index % 2 === 0 ? '-rotate-1' : 'rotate-1',
+              ]}
+              aria-label={`${item.title} by ${item.author}`}
+            >
+              <span
+                class:list={[
+                  'relative flex w-[4.75rem] flex-col justify-between overflow-hidden rounded-[2px] px-2 py-3 shadow-[2px_4px_14px_-4px_rgba(0,0,0,0.4)] sm:w-[5.5rem] sm:px-2.5 sm:py-3.5',
+                  face,
+                  height,
+                ]}
+              >
+                <span
+                  class:list={['absolute inset-x-0 top-0 h-1', stripe]}
+                  aria-hidden="true"
+                />
+                <span class="font-mono text-[0.55rem] tracking-[0.14em] uppercase opacity-60">
+                  {item.category}
+                </span>
+                <span class="mt-auto min-w-0 space-y-1 overflow-hidden">
+                  <span class="line-clamp-4 block text-[0.72rem] leading-[1.15] font-semibold tracking-tight break-words hyphens-auto sm:text-[0.8rem]">
+                    {item.title}
+                  </span>
+                  <span class="line-clamp-1 block truncate text-[0.6rem] leading-snug opacity-70">
+                    {item.author}
+                  </span>
+                </span>
+                <span
+                  class="pointer-events-none absolute inset-y-0 left-0 w-px bg-white/25"
+                  aria-hidden="true"
+                />
+                <span
+                  class="pointer-events-none absolute inset-y-0 right-0 w-px bg-black/15"
+                  aria-hidden="true"
+                />
+              </span>
+            </a>
+          </li>
+        )
+      })}
+    </ul>
+
+    <div class="relative" aria-hidden="true">
+      <div class="h-2.5 rounded-sm bg-gradient-to-b from-[#d2b896] via-[#b0895f] to-[#8f704a] shadow-[0_10px_22px_-8px_rgba(0,0,0,0.5)] dark:from-[#6b5640] dark:via-[#564433] dark:to-[#3f3226]"></div>
+      <div class="mx-0.5 h-2 rounded-b-md bg-[#6e563c] dark:bg-[#241c14]"></div>
+      <div class="from-foreground/15 absolute inset-x-6 -bottom-4 h-5 bg-gradient-to-b to-transparent blur-md"></div>
+    </div>
+  </div>
+</shelf-filter>
+
+<script>
+  class ShelfFilter extends HTMLElement {
+    connectedCallback() {
+      this.addEventListener('click', (event) => {
+        const button = (event.target as Element).closest<HTMLElement>(
+          '[data-filter]',
+        )
+        if (!button) return
+        const filter = button.dataset.filter
+        for (const b of this.querySelectorAll('[data-filter]'))
+          b.setAttribute('aria-pressed', String(b === button))
+        for (const item of this.querySelectorAll<HTMLElement>(
+          '[data-category]',
+        ))
+          item.hidden = filter !== 'all' && item.dataset.category !== filter
+      })
+    }
+  }
+  customElements.define('shelf-filter', ShelfFilter)
+</script>

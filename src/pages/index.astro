@@ -1,0 +1,151 @@
+---
+import { getCollection } from 'astro:content'
+import {
+  formatPostDate,
+  formatReadingTime,
+  getFeaturedJournal,
+  isListedPost,
+  toBlogPostSummary,
+} from '@terrazzo/blog'
+import {
+  BuildLogTile,
+  BuildingTile,
+  ContactTile,
+  ExperimentsTile,
+  FeaturedTile,
+  IdentityTile,
+  LifeTile,
+  NotesTile,
+  NowTile,
+  StackTile,
+  ToolsTile,
+  WorkTile,
+  buildLog,
+} from '@terrazzo/portfolio'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { PAGES, SITE } from '../config.ts'
+import { EXPERIMENTS } from '../data/experiments.ts'
+import {
+  BUILDING,
+  CONTACT,
+  FEATURED,
+  IDENTITY,
+  LIFE,
+  NOW,
+  SELECTED_WORK,
+  STACK,
+  TOOLS,
+} from '../data/home.ts'
+import { ROLES } from '../data/work.ts'
+
+const posts = (await getCollection('blog', isListedPost))
+  .map(toBlogPostSummary)
+  .sort((a, b) => b.pubDate.localeCompare(a.pubDate))
+const latest = getFeaturedJournal(posts)
+---
+
+<BaseLayout title={SITE.title} description={SITE.description}>
+  <main class="relative mx-auto w-full max-w-6xl px-3 py-4 sm:px-4 sm:py-6 md:px-6 lg:py-8">
+    <div class="bento-grid home-bento">
+      <IdentityTile {...IDENTITY} />
+      <NowTile {...NOW} />
+      <FeaturedTile {...FEATURED} />
+      <BuildingTile {...BUILDING} />
+      <ExperimentsTile items={EXPERIMENTS} href="/experiments/" />
+      <StackTile items={STACK} />
+      <ToolsTile {...TOOLS} />
+      {latest ? (
+        <NotesTile
+          eyebrow={PAGES.blog.title}
+          title={latest.title}
+          description={latest.description}
+          href={latest.href}
+          tags={latest.tags}
+          meta={`${formatPostDate(latest.pubDate)} · ${formatReadingTime(latest.readingTime)}`}
+          action={latest.isSeries ? 'Read series' : 'Read note'}
+        />
+      ) : (
+        <NotesTile
+          eyebrow={PAGES.blog.title}
+          title="Journal coming soon"
+          description="No posts yet. Check back soon."
+          href="/blog/"
+          tags={[]}
+          meta=""
+        />
+      )}
+      <LifeTile {...LIFE} />
+      <WorkTile {...SELECTED_WORK} themes={[...SELECTED_WORK.themes]} />
+      <BuildLogTile entries={buildLog(posts, ROLES)} />
+      <ContactTile {...CONTACT} />
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .home-bento {
+    gap: 16px;
+  }
+  .home-bento :global(.bento-tile) {
+    border-radius: var(--tile-radius);
+    box-shadow: 0 3px 8px hsl(var(--foreground) / 0.015);
+  }
+  .home-bento :global(.bento-tile:hover) {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 36px -20px hsl(var(--foreground) / 0.28);
+  }
+  .home-bento :global(.now-tile) {
+    background: hsl(var(--secondary) / 0.55);
+  }
+  @media (min-width: 1024px) {
+    .home-bento :global([data-tile='featured']) {
+      order: 3;
+      grid-column: span 7;
+    }
+    .home-bento :global([data-tile='building']) {
+      order: 4;
+      grid-column: span 5;
+      padding-bottom: 110px;
+    }
+    .home-bento :global([data-tile='experiments']) {
+      order: 5;
+      grid-column: span 3;
+    }
+    .home-bento :global([data-tile='stack']) {
+      order: 6;
+      grid-column: span 3;
+    }
+    .home-bento :global([data-tile='work']) {
+      order: 7;
+      grid-column: span 3;
+    }
+    .home-bento :global([data-tile='tools']) {
+      order: 8;
+      grid-column: span 3;
+    }
+    .home-bento :global([data-tile='notes']) {
+      order: 9;
+      grid-column: span 7;
+    }
+    .home-bento :global([data-tile='life']) {
+      order: 10;
+      grid-column: span 5;
+    }
+    .home-bento :global([data-tile='log']) {
+      order: 11;
+      grid-column: span 6;
+    }
+    .home-bento :global([data-tile='contact']) {
+      order: 12;
+      grid-column: span 6;
+    }
+  }
+  @media (max-width: 639px) {
+    .home-bento {
+      gap: 12px;
+    }
+    .home-bento :global([data-tile='building']) {
+      padding-bottom: 110px;
+    }
+  }
+</style>

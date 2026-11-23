@@ -1,0 +1,377 @@
+/*
+ * @terrazzo/ui styles: fonts, color tokens, base elements, prose and toasts.
+ * Import after `@import 'tailwindcss'`.
+ */
+
+/* —— Fonts (self-hosted, SIL OFL 1.1, licenses in ./fonts) —— */
+
+@font-face {
+  font-family: 'Space Grotesk Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 300 700;
+  src: url('./fonts/space-grotesk-latin-ext-wght-normal.woff2')
+    format('woff2-variations');
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB,
+    U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Space Grotesk Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 300 700;
+  src: url('./fonts/space-grotesk-latin-wght-normal.woff2')
+    format('woff2-variations');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212,
+    U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('./fonts/ibm-plex-mono-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url('./fonts/ibm-plex-mono-latin-500-normal.woff2') format('woff2');
+}
+
+/* —— Tokens —— */
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans:
+    'Space Grotesk Variable', 'Space Grotesk', ui-sans-serif, system-ui,
+    sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-line: hsl(var(--line));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+}
+
+@layer base {
+  /* Colors are HSL channels so they work with alpha: hsl(var(--x) / 0.5). */
+  :root {
+    --background: 36 18% 97%;
+    --foreground: 24 10% 8%;
+    --card: 40 25% 99%;
+    --card-foreground: 24 10% 8%;
+    --popover: 40 25% 99%;
+    --popover-foreground: 24 10% 8%;
+    --primary: 22 74% 48%;
+    --primary-foreground: 40 30% 98%;
+    --secondary: 32 12% 93%;
+    --secondary-foreground: 24 10% 12%;
+    --muted: 32 10% 92%;
+    --muted-foreground: 25 6% 38%;
+    --accent: 32 12% 93%;
+    --accent-foreground: 24 10% 12%;
+    --border: 30 8% 86%;
+    --input: 30 8% 86%;
+    --ring: 22 74% 48%;
+    --line: 30 8% 86%;
+    --radius: 1rem;
+    --tile-radius: 1rem;
+  }
+
+  .dark {
+    --background: 24 8% 5%;
+    --foreground: 36 15% 94%;
+    --card: 24 7% 8%;
+    --card-foreground: 36 15% 94%;
+    --popover: 24 7% 8%;
+    --popover-foreground: 36 15% 94%;
+    --primary: 22 70% 56%;
+    --primary-foreground: 24 10% 6%;
+    --secondary: 24 6% 14%;
+    --secondary-foreground: 36 15% 94%;
+    --muted: 24 6% 14%;
+    --muted-foreground: 30 8% 68%;
+    --accent: 24 6% 14%;
+    --accent-foreground: 36 15% 94%;
+    --border: 24 6% 18%;
+    --input: 24 6% 18%;
+    --ring: 22 70% 56%;
+    --line: 24 6% 18%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    background-image: radial-gradient(
+      ellipse 80% 50% at 10% -10%,
+      hsl(var(--primary) / 0.07),
+      transparent 55%
+    );
+  }
+
+  .dark body {
+    background-image: radial-gradient(
+      ellipse 80% 50% at 10% -10%,
+      hsl(var(--primary) / 0.1),
+      transparent 55%
+    );
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@utility link {
+  @apply decoration-1 underline-offset-3 hover:underline;
+}
+
+@utility link-underline {
+  @apply underline decoration-current/30 decoration-1 underline-offset-3 transition-colors hover:decoration-current;
+}
+
+/* —— Prose: long-form text from Markdown and MDX —— */
+
+@layer components {
+  .prose {
+    color: hsl(var(--foreground) / 0.82);
+    font-size: 1rem;
+    line-height: 1.75;
+    overflow-wrap: break-word;
+  }
+
+  .prose
+    :where(p, ul, ol, dl, blockquote, table, figure, pre, hr):not(
+      :where(.not-prose, .not-prose *)
+    ) {
+    margin-block: 1.25em;
+  }
+
+  .prose :where(h1, h2, h3, h4):not(:where(.not-prose, .not-prose *)) {
+    color: hsl(var(--foreground));
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+    scroll-margin-top: 6rem;
+  }
+
+  .prose :where(h1):not(:where(.not-prose, .not-prose *)) {
+    margin: 0 0 0.9em;
+    font-size: 2.25em;
+    line-height: 1.1;
+  }
+
+  .prose :where(h2):not(:where(.not-prose, .not-prose *)) {
+    margin: 2em 0 1em;
+    font-size: 1.5em;
+    line-height: 1.33;
+  }
+
+  .prose :where(h3):not(:where(.not-prose, .not-prose *)) {
+    margin: 1.6em 0 0.6em;
+    font-size: 1.25em;
+    line-height: 1.6;
+  }
+
+  .prose :where(h4):not(:where(.not-prose, .not-prose *)) {
+    margin: 1.5em 0 0.5em;
+    line-height: 1.5;
+  }
+
+  .prose
+    :where(h2 + *, h3 + *, h4 + *, hr + *):not(
+      :where(.not-prose, .not-prose *)
+    ) {
+    margin-top: 0;
+  }
+
+  .prose :where(a):not(:where(.not-prose, .not-prose *)) {
+    color: hsl(var(--foreground));
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-color: hsl(var(--primary) / 0.45);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 0.2s ease;
+  }
+
+  .prose :where(a:hover):not(:where(.not-prose, .not-prose *)) {
+    text-decoration-color: hsl(var(--primary));
+  }
+
+  .prose :where(strong):not(:where(.not-prose, .not-prose *)) {
+    color: hsl(var(--foreground));
+    font-weight: 600;
+  }
+
+  .prose :where(ul, ol):not(:where(.not-prose, .not-prose *)) {
+    padding-inline-start: 1.625em;
+  }
+
+  .prose :where(ul):not(:where(.not-prose, .not-prose *)) {
+    list-style-type: disc;
+  }
+
+  .prose :where(ol):not(:where(.not-prose, .not-prose *)) {
+    list-style-type: decimal;
+  }
+
+  .prose :where(li):not(:where(.not-prose, .not-prose *)) {
+    margin-block: 0.5em;
+    padding-inline-start: 0.375em;
+  }
+
+  .prose :where(li)::marker {
+    color: hsl(var(--muted-foreground));
+  }
+
+  .prose :where(li > ul, li > ol):not(:where(.not-prose, .not-prose *)) {
+    margin-block: 0.75em;
+  }
+
+  .prose :where(blockquote):not(:where(.not-prose, .not-prose *)) {
+    border-inline-start: 2px solid hsl(var(--border));
+    padding-inline-start: 1em;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .prose :where(hr):not(:where(.not-prose, .not-prose *)) {
+    border-top: 1px solid hsl(var(--border));
+    margin-block: 3em;
+  }
+
+  .prose :where(img, video, picture):not(:where(.not-prose, .not-prose *)) {
+    margin-block: 2em;
+    border-radius: calc(var(--radius) - 4px);
+  }
+
+  .prose :where(figcaption):not(:where(.not-prose, .not-prose *)) {
+    margin-top: 0.85em;
+    color: hsl(var(--muted-foreground));
+    font-size: 0.875em;
+  }
+
+  .prose :where(code):not(:where(pre code, .not-prose, .not-prose *)) {
+    border: 1px solid hsl(var(--border));
+    border-radius: 0.375rem;
+    background: hsl(var(--muted) / 0.5);
+    padding: 0.05em 0.3em;
+    color: hsl(var(--foreground));
+    font-size: 0.875em;
+  }
+
+  .prose :where(pre):not(:where(.not-prose, .not-prose *)) {
+    overflow-x: auto;
+    border-radius: 0.5rem;
+    background: hsl(24 10% 10%);
+    padding: 0.85em 1.15em;
+    color: hsl(36 15% 92%);
+    font-size: 0.875em;
+    line-height: 1.7;
+  }
+
+  .prose :where(kbd):not(:where(.not-prose, .not-prose *)) {
+    border: 1px solid hsl(var(--border));
+    border-bottom-width: 2px;
+    border-radius: 0.3rem;
+    padding: 0.1em 0.35em;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+  }
+
+  .prose :where(table):not(:where(.not-prose, .not-prose *)) {
+    width: 100%;
+    font-size: 0.875em;
+    line-height: 1.7;
+  }
+
+  .prose :where(th, td):not(:where(.not-prose, .not-prose *)) {
+    border-bottom: 1px solid hsl(var(--border));
+    padding: 0.55em 0.6em;
+    text-align: start;
+    vertical-align: baseline;
+  }
+
+  .prose :where(th):not(:where(.not-prose, .not-prose *)) {
+    color: hsl(var(--foreground));
+    font-weight: 600;
+  }
+
+  .prose
+    :where(th:first-child, td:first-child):not(
+      :where(.not-prose, .not-prose *)
+    ) {
+    padding-inline-start: 0;
+  }
+
+  .prose > :first-child {
+    margin-top: 0;
+  }
+
+  .prose > :last-child {
+    margin-bottom: 0;
+  }
+
+  /* —— Toasts (see toast.ts) —— */
+
+  .toast-region {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .toast {
+    border: 1px solid hsl(var(--border));
+    border-radius: 0.5rem;
+    background: hsl(var(--background));
+    padding: 0.75rem 1rem;
+    box-shadow: 0 12px 32px -16px hsl(var(--foreground) / 0.35);
+    font-size: 0.875rem;
+    animation: toast-in 0.2s ease-out;
+  }
+
+  @keyframes toast-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+}

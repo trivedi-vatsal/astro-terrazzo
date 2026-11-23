@@ -1,0 +1,168 @@
+---
+/**
+ * Roles grouped by company. Roles with a summary or sections expand and
+ * collapse with <details>.
+ */
+import { Icon } from '@terrazzo/ui'
+import type { Role } from './types.ts'
+
+interface Props {
+  roles: Role[]
+}
+
+const { roles } = Astro.props
+
+const companies = new Map<
+  string,
+  { url?: string; current: boolean; roles: Role[] }
+>()
+for (const role of roles) {
+  const entry = companies.get(role.company) ?? { current: false, roles: [] }
+  entry.roles.push(role)
+  entry.url ??= role.companyUrl
+  entry.current ||= !role.end
+  companies.set(role.company, entry)
+}
+---
+
+<div>
+  {[...companies].map(([company, { url, current, roles }]) => (
+    <div class="border-border/70 space-y-4 border-t py-8">
+      <div class="flex items-center gap-3">
+        <div class="flex size-6 shrink-0 items-center justify-center">
+          <span class="bg-muted-foreground/40 flex size-2 rounded-full" />
+        </div>
+        <h3 class="text-lg leading-snug font-semibold">
+          {url ? (
+            <a
+              class="link"
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {company}
+            </a>
+          ) : (
+            company
+          )}
+        </h3>
+        {current && (
+          <span class="relative flex items-center justify-center">
+            <span class="sr-only">Current employer</span>
+            <span class="bg-primary absolute inline-flex size-3 animate-ping rounded-full opacity-50 motion-reduce:animate-none" />
+            <span class="bg-primary relative inline-flex size-2 rounded-full" />
+          </span>
+        )}
+      </div>
+
+      <div class="relative space-y-8">
+        {roles.map((role) => {
+          const hasDetail = Boolean(role.summary || role.sections?.length)
+          const head = (
+            <>
+              <div class="relative z-1 mb-1 flex items-start gap-3 text-base">
+                <div class="bg-muted text-muted-foreground border-muted-foreground/15 ring-line ring-offset-background flex size-6 shrink-0 items-center justify-center rounded-lg border ring-1 ring-offset-1">
+                  <Icon name="briefcase" class="size-4" />
+                </div>
+                <h4 class="text-foreground flex-1 font-medium text-balance">
+                  {role.title}
+                </h4>
+                {hasDetail && (
+                  <svg
+                    class="chevrons text-muted-foreground h-lh w-4 shrink-0"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M7 15L12 20L17 15" />
+                    <path d="M7 9L12 4L17 9" />
+                  </svg>
+                )}
+              </div>
+              <dl class="text-muted-foreground relative z-1 flex items-center gap-2 pl-9 text-sm">
+                {role.type && (
+                  <>
+                    <div>
+                      <dt class="sr-only">Employment type</dt>
+                      <dd>{role.type}</dd>
+                    </div>
+                    <span class="bg-border h-4 w-px" aria-hidden="true" />
+                  </>
+                )}
+                <div>
+                  <dt class="sr-only">Employment period</dt>
+                  <dd class="flex items-center gap-0.5 tabular-nums">
+                    <span>{role.start.slice(0, 4)}</span>
+                    <span class="font-mono">-</span>
+                    <span>{role.end ? role.end.slice(0, 4) : 'Present'}</span>
+                  </dd>
+                </div>
+              </dl>
+            </>
+          )
+
+          return (
+            <div class="last:before:bg-background relative last:before:absolute last:before:h-full last:before:w-4">
+              {hasDetail ? (
+                <details class="role" open={!role.collapsed}>
+                  <summary class="hover:before:bg-muted/30 relative block w-full cursor-pointer list-none text-left select-none before:absolute before:-top-1 before:-right-1 before:-bottom-1.5 before:left-7 before:rounded-lg [&::-webkit-details-marker]:hidden">
+                    {head}
+                  </summary>
+                  <div class="pt-2 pl-9 text-[0.95rem] leading-relaxed">
+                    {role.summary && (
+                      <p class="text-foreground/80">{role.summary}</p>
+                    )}
+                    {role.sections?.map((section) => (
+                      <section class="mt-4">
+                        <h5 class="text-foreground font-medium">
+                          {section.title}
+                        </h5>
+                        <ul class="text-foreground/80 mt-2 list-disc space-y-1.5 pl-5 marker:text-muted-foreground">
+                          {section.items.map((item) => (
+                            <li>{item}</li>
+                          ))}
+                        </ul>
+                      </section>
+                    ))}
+                  </div>
+                </details>
+              ) : (
+                <div>{head}</div>
+              )}
+
+              {role.skills && role.skills.length > 0 && (
+                <ul class="flex flex-wrap gap-1.5 pt-3 pl-9">
+                  {role.skills.map((skill) => (
+                    <li class="bg-muted/50 text-muted-foreground inline-flex items-center rounded-md border px-1.5 py-0.5 font-mono text-xs">
+                      {skill}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  ))}
+</div>
+
+<style>
+  .chevrons path {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform 0.15s ease;
+  }
+  .role[open] .chevrons path {
+    transform: scaleY(-1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .chevrons path {
+      transition: none;
+    }
+  }
+</style>

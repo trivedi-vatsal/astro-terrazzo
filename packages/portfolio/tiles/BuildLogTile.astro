@@ -1,0 +1,95 @@
+---
+import BentoTile from './BentoTile.astro'
+import type { LogEntry } from '../types.ts'
+
+interface Props {
+  entries: LogEntry[]
+  title?: string
+}
+
+const { entries, title = 'Build log' } = Astro.props
+---
+
+<BentoTile
+  tile="log"
+  class="order-10 col-span-1 flex min-h-[220px] flex-col p-5 sm:p-6 lg:order-10 lg:col-span-3"
+  delay={240}
+  label={title}
+>
+  <p class="bento-label bento-wake bento-wake-label">{title}</p>
+  {entries.length === 0 ? (
+    <p class="text-muted-foreground mt-4 text-sm">No dated entries yet.</p>
+  ) : (
+    <ol class="build-timeline mt-4">
+      {entries.map((entry, i) => (
+        <li
+          class="build-entry bento-wake bento-wake-x"
+          style={`--wake-delay: ${i * 50}ms`}
+        >
+          <time class="text-muted-foreground font-mono text-[0.65rem] tracking-wide">
+            {entry.date}
+          </time>
+          {entry.href ? (
+            <a
+              href={entry.href}
+              class="hover:text-primary text-sm font-medium transition-colors"
+            >
+              {entry.label}
+            </a>
+          ) : (
+            <span class="text-sm font-medium">{entry.label}</span>
+          )}
+        </li>
+      ))}
+    </ol>
+  )}
+</BentoTile>
+
+<style>
+  .build-entry {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0 0 20px 22px;
+  }
+  .build-entry::before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 8px;
+    bottom: -8px;
+    width: 1px;
+    background: hsl(var(--border));
+  }
+  .build-entry::after {
+    content: '';
+    position: absolute;
+    left: 1px;
+    top: 5px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: hsl(var(--primary));
+    transition:
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.35s ease;
+  }
+  :global(.bento-tile:hover) .build-entry::after {
+    transform: scale(1.35);
+    box-shadow: 0 0 0 4px hsl(var(--primary) / 0.18);
+  }
+  .build-entry:last-child {
+    padding-bottom: 0;
+  }
+  .build-entry:last-child::before {
+    display: none;
+  }
+  .build-entry time {
+    line-height: 16px;
+  }
+  .build-entry a,
+  .build-entry > span {
+    line-height: 1.5;
+  }
+</style>

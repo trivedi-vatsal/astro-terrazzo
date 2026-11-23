@@ -1,0 +1,32 @@
+---
+import { Highlights, WorkTimeline } from '@terrazzo/portfolio'
+import PageLayout from '../layouts/PageLayout.astro'
+import { PAGES } from '../config.ts'
+import { FOCUS_AREAS, HIGHLIGHTS, ROLES } from '../data/work.ts'
+---
+
+<PageLayout title={PAGES.work.title} description={PAGES.work.description}>
+  <Fragment slot="header">
+    <h1 class="scroll-m-20 text-3xl font-semibold tracking-tight sm:text-4xl">
+      {PAGES.work.title}
+    </h1>
+    <p class="text-muted-foreground mt-3 max-w-2xl text-base">
+      {PAGES.work.description}
+    </p>
+    <p class="text-muted-foreground mt-5 max-w-3xl text-sm leading-relaxed">
+      <strong class="text-foreground font-semibold">Focus areas</strong>
+      {FOCUS_AREAS}
+    </p>
+  </Fragment>
+
+  <section aria-labelledby="experience-heading">
+    <h2
+      id="experience-heading"
+      class="mb-6 text-2xl font-semibold tracking-tight"
+    >
+      Work experience
+    </h2>
+    <WorkTimeline roles={ROLES} />
+  </section>
+  <Highlights highlights={HIGHLIGHTS} />
+</PageLayout>

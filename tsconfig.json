@@ -1,0 +1,18 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@terrazzo/ui": ["./packages/ui/index.ts"],
+      "@terrazzo/ui/*": ["./packages/ui/*"],
+      "@terrazzo/blog": ["./packages/blog/index.ts"],
+      "@terrazzo/blog/*": ["./packages/blog/*"],
+      "@terrazzo/seo": ["./packages/seo/index.ts"],
+      "@terrazzo/seo/*": ["./packages/seo/*"],
+      "@terrazzo/portfolio": ["./packages/portfolio/index.ts"],
+      "@terrazzo/portfolio/*": ["./packages/portfolio/*"]
+    }
+  },
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist"]
+}

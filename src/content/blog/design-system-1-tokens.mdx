@@ -1,0 +1,37 @@
+---
+title: 'Building a small design system, part 1: Tokens'
+description: 'Start with the decisions, not the components. Colors, spacing and type as one source of truth.'
+pubDate: 2026-09-10
+tags: ['design systems', 'css']
+series:
+  slug: small-design-system
+  title: 'Building a small design system'
+  part: 1
+  description: 'A two-part series on growing a design system from a single tokens file. It also shows how series work in this theme.'
+---
+
+A design system doesn't start with a button. It starts with the decisions every button, card and page will share: color, spacing, type and radius. Those decisions are your tokens.
+
+## One file, many outputs
+
+Keep tokens in one place and generate everything else from it:
+
+```json
+{
+  "color": {
+    "primary": { "value": "hsl(22 74% 48%)" },
+    "background": { "value": "hsl(36 18% 97%)" }
+  },
+  "radius": { "tile": { "value": "1rem" } }
+}
+```
+
+From that file you can produce CSS variables for the site, typed constants for your scripts, and styles for your design tool. When a color changes, it changes everywhere in one commit.
+
+## Name by role, not by value
+
+`--primary` survives a rebrand. `--orange-500` doesn't. Name tokens after what they do, and dark mode becomes a second set of values for the same names.
+
+## Series in this theme
+
+This post is part 1 of a series. Posts that share a `series.slug` in their frontmatter are grouped on the journal page and linked together, with part numbers and next and previous links.

@@ -1,0 +1,60 @@
+---
+title: 'Writing posts: frontmatter, tags and drafts'
+description: 'How to add a post, what each frontmatter field does, and how drafts, tags and code blocks work.'
+pubDate: 2026-10-12
+tags: ['guide', 'markdown']
+---
+
+Posts are Markdown or MDX files in `src/content/blog/`. The file name becomes the URL, so `writing-posts.mdx` is published at `/blog/writing-posts/`.
+
+## Frontmatter
+
+Every post starts with a frontmatter block:
+
+```yaml
+---
+title: 'My first post'
+description: 'One or two sentences for cards, feeds and share images.'
+pubDate: 2026-10-01
+updatedDate: 2026-10-05 # optional
+tags: ['design', 'css']
+draft: false # true keeps it out of production builds
+heroImage: '/images/cover.jpg' # optional
+---
+```
+
+Only `title`, `description` and `pubDate` are required. The `author` defaults to the name in `src/config.ts`.
+
+## Tags
+
+Each tag gets its own page at `/blog/tags/{tag}/`, and the journal index can group posts by tag. Keep tags short and reuse them across posts so the groups stay useful.
+
+## Drafts
+
+Set `draft: true` while you work on a post. It shows up in `npm run dev`, but production builds, the RSS feed and `npm run preview` leave it out.
+
+## Code blocks
+
+Fenced code blocks get syntax highlighting at build time:
+
+```ts
+export function slugify(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+```
+
+Inline code like `npm run dev` is styled too. Links to other sites, like [the Astro docs](https://docs.astro.build), open in a new tab.
+
+## Using components
+
+MDX lets you import and use Astro components inside a post:
+
+```mdx
+import { Button } from '@terrazzo/ui'
+
+<Button href="/about/">About me</Button>
+```

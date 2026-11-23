@@ -1,0 +1,41 @@
+---
+/** Collapsible "On this page" list for narrow screens. */
+import { Icon } from '@terrazzo/ui'
+
+export type TocItem = { title: string; url: string; depth: number }
+
+interface Props {
+  items: TocItem[]
+  label?: string
+}
+
+const { items, label = 'On this page' } = Astro.props
+---
+
+{items.length > 0 && (
+  <details class="bg-card not-prose group/toc rounded-xl border font-sans">
+    <summary class="hover:bg-muted/50 focus-visible:ring-ring/50 flex w-full cursor-pointer list-none items-center gap-2 rounded-xl py-2.5 pr-2 pl-4 text-sm font-medium transition-colors outline-none group-open/toc:rounded-b-none focus-visible:ring-2 [&::-webkit-details-marker]:hidden">
+      <Icon name="text" class="size-4 -translate-x-0.5" />
+      {label}
+      <span class="text-muted-foreground ml-auto shrink-0">
+        <Icon
+          name="chevron-down"
+          class="size-4 transition-transform duration-150 group-open/toc:rotate-180"
+        />
+      </span>
+    </summary>
+    <ul class="flex flex-col px-4 pb-2">
+      {items.map((item) => (
+        <li class="flex py-1">
+          <a
+            href={item.url}
+            data-depth={item.depth}
+            class="text-muted-foreground hover:text-accent-foreground text-sm transition-colors data-[depth=3]:pl-4 data-[depth=4]:pl-8"
+          >
+            {item.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </details>
+)}

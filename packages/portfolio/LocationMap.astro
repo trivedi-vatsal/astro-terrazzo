@@ -1,0 +1,111 @@
+---
+/** Full-width OpenStreetMap embed with a switcher between places. */
+import type { Place } from './types.ts'
+
+interface Props {
+  places: Place[]
+}
+
+const { places } = Astro.props
+const [first] = places
+---
+
+{first && (
+  <location-map
+    id="place"
+    class="mt-6 block w-full scroll-mt-24"
+    aria-labelledby="place-heading"
+    role="region"
+  >
+    <div class="bg-muted relative h-[min(52vh,420px)] w-full overflow-hidden">
+      <iframe
+        title={`Map: ${first.note}`}
+        src={first.embed}
+        class="pointer-events-none absolute inset-0 h-full w-full scale-[1.02] opacity-90 contrast-[1.15] grayscale"
+        loading="lazy"
+        tabindex="-1"
+        aria-hidden="true"
+        referrerpolicy="no-referrer-when-downgrade"
+      ></iframe>
+
+      <div class="absolute top-5 left-5 z-10 flex flex-col gap-2 sm:flex-row sm:gap-3">
+        {places.map((place, i) => (
+          <button
+            type="button"
+            aria-pressed={i === 0}
+            data-embed={place.embed}
+            data-note={place.note}
+            data-coords={place.coords}
+            data-link={place.link}
+            class="group bg-background/75 text-muted-foreground hover:bg-background hover:text-foreground focus-visible:ring-foreground/40 aria-pressed:bg-background aria-pressed:text-foreground inline-flex items-center gap-2 px-3 py-1.5 font-mono text-[0.65rem] tracking-[0.12em] uppercase transition-colors focus-visible:ring-2 focus-visible:outline-none aria-pressed:shadow-sm"
+          >
+            <span
+              class="bg-foreground hidden h-1.5 w-1.5 rounded-full group-aria-pressed:block"
+              aria-hidden="true"
+            />
+            {place.code} · {place.label}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <div class="mx-auto flex w-full max-w-4xl flex-col gap-2 px-5 py-6 sm:flex-row sm:items-baseline sm:justify-between">
+      <div>
+        <h2
+          id="place-heading"
+          class="text-xl font-medium tracking-tight sm:text-2xl"
+          data-note
+        >
+          {first.note}
+        </h2>
+        <p
+          class="text-muted-foreground mt-1 font-mono text-xs tracking-wide"
+          data-coords
+        >
+          {first.coords}
+        </p>
+      </div>
+      <a
+        href={first.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-link
+        class="text-muted-foreground hover:text-foreground font-mono text-[0.65rem] tracking-[0.12em] uppercase transition-colors"
+      >
+        OpenStreetMap
+      </a>
+    </div>
+  </location-map>
+)}
+
+<script>
+  class LocationMap extends HTMLElement {
+    connectedCallback() {
+      const frame = this.querySelector('iframe')!
+      const note = this.querySelector('h2[data-note]')!
+      const coords = this.querySelector('p[data-coords]')!
+      const link = this.querySelector<HTMLAnchorElement>('a[data-link]')!
+
+      this.addEventListener('click', (event) => {
+        const button = (event.target as Element).closest<HTMLButtonElement>(
+          'button[data-embed]',
+        )
+        if (!button || button.getAttribute('aria-pressed') === 'true') return
+        for (const b of this.querySelectorAll('button[data-embed]'))
+          b.setAttribute('aria-pressed', String(b === button))
+        const {
+          embed = '',
+          note: text = '',
+          coords: at = '',
+          link: href = '',
+        } = button.dataset
+        frame.src = embed
+        frame.title = `Map: ${text}`
+        note.textContent = text
+        coords.textContent = at
+        link.href = href
+      })
+    }
+  }
+  customElements.define('location-map', LocationMap)
+</script>

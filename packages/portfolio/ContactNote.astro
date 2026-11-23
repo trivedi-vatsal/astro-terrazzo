@@ -1,0 +1,134 @@
+---
+/**
+ * "Send a note" link that opens a side sheet with a short form. Submitting it
+ * opens the visitor's mail app with the note filled in; nothing is sent to a
+ * server.
+ */
+interface Props {
+  /** Address, with or without `mailto:`. */
+  email: string
+  label?: string
+  /** Subject line when the visitor leaves the name empty. */
+  subject?: string
+}
+
+const {
+  email,
+  label = 'Contact',
+  subject = 'A note from your site',
+} = Astro.props
+const address = email.replace(/^mailto:/, '')
+const field =
+  'border-border/80 focus:border-foreground w-full border-0 border-b bg-transparent px-0 py-2 text-base outline-none'
+const caption =
+  'text-muted-foreground font-mono text-[0.65rem] tracking-wide uppercase'
+---
+
+<contact-note data-email={address} data-subject={subject}>
+  <button
+    type="button"
+    data-open
+    class="text-muted-foreground hover:text-foreground text-xs tracking-wide underline-offset-4 transition-colors hover:underline"
+  >
+    {label}
+  </button>
+
+  <dialog
+    aria-labelledby="contact-title"
+    class="border-border bg-background text-foreground fixed inset-y-0 right-0 left-auto m-0 h-full max-h-none w-full max-w-md border-l p-6 backdrop:bg-black/40 backdrop:backdrop-blur-[2px] sm:p-8"
+  >
+    <div class="flex h-full flex-col">
+      <div class="flex items-start justify-between gap-3">
+        <h2 id="contact-title" class="text-2xl font-semibold tracking-tight">
+          Send a note
+        </h2>
+        <button
+          type="button"
+          data-close
+          class="text-muted-foreground hover:text-foreground font-mono text-sm"
+        >
+          Close
+        </button>
+      </div>
+
+      <form class="mt-10 flex flex-1 flex-col gap-5">
+        <label class="block space-y-2">
+          <span class={caption}>Name</span>
+          <input name="name" required autocomplete="name" class={field} />
+        </label>
+        <label class="block space-y-2">
+          <span class={caption}>Email</span>
+          <input
+            name="from"
+            type="email"
+            required
+            autocomplete="email"
+            class={field}
+          />
+        </label>
+        <label class="block space-y-2">
+          <span class={caption}>Message</span>
+          <textarea
+            name="message"
+            required
+            rows="5"
+            class:list={[field, 'resize-none']}
+          ></textarea>
+        </label>
+
+        <button
+          type="submit"
+          class="bg-foreground text-background mt-auto w-full py-3 text-sm font-medium transition-[opacity,transform] duration-200 hover:opacity-90 active:scale-[0.98]"
+        >
+          Send the note
+        </button>
+      </form>
+
+      <p class="text-muted-foreground mt-6 text-sm leading-relaxed">
+        Rather write directly?
+        <a
+          href={`mailto:${address}`}
+          class="text-foreground decoration-foreground/25 hover:decoration-foreground underline underline-offset-4"
+        >
+          {address}
+        </a>
+      </p>
+    </div>
+  </dialog>
+</contact-note>
+
+<script>
+  class ContactNote extends HTMLElement {
+    connectedCallback() {
+      const dialog = this.querySelector('dialog')!
+      const form = this.querySelector('form')!
+      const { email = '', subject = '' } = this.dataset
+
+      this.querySelector('[data-open]')!.addEventListener('click', () =>
+        dialog.showModal(),
+      )
+      this.querySelector('[data-close]')!.addEventListener('click', () =>
+        dialog.close(),
+      )
+      // A click on the backdrop lands on the <dialog> itself.
+      dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) dialog.close()
+      })
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault()
+        const data = new FormData(form)
+        const get = (key: string) => String(data.get(key) ?? '').trim()
+        const name = get('name')
+        const body = [get('message'), '', `- ${get('from')}`, name]
+          .filter(Boolean)
+          .join('\n')
+        const title = name ? `Note from ${name}` : subject
+        location.href = `mailto:${email}?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`
+        dialog.close()
+        form.reset()
+      })
+    }
+  }
+  customElements.define('contact-note', ContactNote)
+</script>

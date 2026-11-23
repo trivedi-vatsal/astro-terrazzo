@@ -1,0 +1,26 @@
+---
+/**
+ * Put this in <head>. It sets the `dark` class before first paint, follows the
+ * OS setting until the visitor picks a theme, and re-applies after Astro's
+ * client-side navigation swaps the document.
+ */
+---
+
+<script is:inline>
+  ;(() => {
+    const media = matchMedia('(prefers-color-scheme: dark)')
+    const apply = () => {
+      let stored = null
+      try {
+        stored = localStorage.getItem('theme')
+      } catch {}
+      document.documentElement.classList.toggle(
+        'dark',
+        stored === 'dark' || (stored !== 'light' && media.matches),
+      )
+    }
+    apply()
+    media.addEventListener('change', apply)
+    document.addEventListener('astro:after-swap', apply)
+  })()
+</script>

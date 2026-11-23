@@ -1,0 +1,181 @@
+---
+/** Card for an experiment: browser-chrome cover that scrolls on hover. */
+import type { Experiment } from './types.ts'
+
+interface Props {
+  item: Experiment
+  /** 1-based position, shown as a large number on hover. */
+  index: number
+  href: string
+}
+
+const { item, index, href } = Astro.props
+const number = String(index).padStart(2, '0')
+---
+
+<a
+  href={href}
+  class="bento-tile experiment-card group relative flex h-full flex-col overflow-hidden"
+>
+  <div class="experiment-media">
+    <div class="experiment-chrome" aria-hidden="true">
+      <span class="experiment-dot" />
+      <span class="experiment-dot" />
+      <span class="experiment-dot" />
+      <span class="experiment-url">{item.slug}</span>
+    </div>
+    <div class="experiment-viewport">
+      {item.cover ? (
+        <img
+          src={item.cover}
+          alt=""
+          class="experiment-shot"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <div class="experiment-placeholder">
+          <span class="bento-label">{item.kind}</span>
+          <span class="experiment-placeholder-title">{item.title}</span>
+        </div>
+      )}
+    </div>
+  </div>
+
+  <div class="experiment-copy relative z-10 flex flex-1 flex-col p-6 sm:p-7">
+    <span
+      class="bento-wake bento-wake-mark text-primary pointer-events-none absolute -right-1 -bottom-6 font-mono text-8xl font-semibold"
+      aria-hidden="true"
+    >
+      {number}
+    </span>
+    <p class="bento-label bento-wake bento-wake-label relative">{item.kind}</p>
+    <h2 class="bento-wake bento-wake-title relative mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
+      {item.title}
+    </h2>
+    <p class="text-muted-foreground relative mt-3 text-sm leading-relaxed sm:text-base">
+      {item.blurb}
+    </p>
+    <span class="bento-arrow text-foreground relative mt-auto pt-6">
+      Explore experiment <span aria-hidden="true">→</span>
+    </span>
+  </div>
+</a>
+
+<style>
+  .experiment-card {
+    padding: 0;
+  }
+
+  .experiment-media {
+    border-bottom: 1px solid hsl(var(--border) / 0.7);
+    background: hsl(var(--secondary) / 0.35);
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .experiment-card:hover .experiment-media {
+    transform: scale(1.02);
+  }
+
+  .experiment-chrome {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.65rem 0.85rem;
+    border-bottom: 1px solid hsl(var(--border) / 0.55);
+    background: hsl(var(--card));
+  }
+
+  .experiment-dot {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 9999px;
+    background: hsl(var(--muted-foreground) / 0.35);
+  }
+
+  .experiment-dot:nth-child(1) {
+    background: #e7a08a;
+  }
+  .experiment-dot:nth-child(2) {
+    background: #e7c98a;
+  }
+  .experiment-dot:nth-child(3) {
+    background: #a8c99a;
+  }
+
+  .experiment-url {
+    margin-left: 0.5rem;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border-radius: 9999px;
+    background: hsl(var(--secondary) / 0.7);
+    padding: 0.2rem 0.75rem;
+    font-family:
+      'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.65rem;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .experiment-viewport {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: hsl(var(--secondary) / 0.45);
+  }
+
+  .experiment-shot {
+    display: block;
+    width: 100%;
+    height: auto;
+    min-height: 145%;
+    object-fit: cover;
+    object-position: top center;
+    transform: translateY(0);
+    transition: transform 1.05s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .experiment-card:hover .experiment-shot {
+    transform: translateY(calc(-100% + 62.5%));
+  }
+
+  .experiment-placeholder {
+    display: flex;
+    min-height: 145%;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    background: linear-gradient(
+      160deg,
+      hsl(var(--primary) / 0.14),
+      hsl(var(--secondary) / 0.4) 55%,
+      hsl(var(--card))
+    );
+  }
+
+  .experiment-placeholder-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+
+  .experiment-card:hover .experiment-placeholder {
+    transform: translateY(calc(-100% + 62.5%));
+    transition: transform 1.05s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .experiment-card:hover .bento-wake-title {
+    color: hsl(var(--primary));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .experiment-media,
+    .experiment-shot,
+    .experiment-placeholder {
+      transition: none !important;
+      transform: none !important;
+    }
+  }
+</style>

@@ -1,0 +1,37 @@
+---
+title: 'Diagrams with Mermaid'
+description: 'Draw flowcharts and sequence diagrams in a code block. They follow the site theme and can be zoomed, panned and opened full screen.'
+pubDate: 2026-09-28
+tags: ['guide', 'diagrams']
+---
+
+Write a fenced code block with the `mermaid` language and the post renders it as a diagram. Readers can zoom, pan, copy the source, or open it full screen, and the colors follow light and dark mode.
+
+## A flowchart
+
+```mermaid
+flowchart LR
+  A[Write a post] --> B{Draft?}
+  B -- yes --> C[Preview in dev]
+  B -- no --> D[Build]
+  D --> E[Deploy]
+  C --> A
+```
+
+## A sequence diagram
+
+```mermaid
+sequenceDiagram
+  participant Reader
+  participant Site
+  participant CDN
+  Reader->>Site: Open /blog/
+  Site->>CDN: Request static HTML
+  CDN-->>Reader: Page and styles
+  Reader->>Site: Scroll to a diagram
+  Site-->>Reader: Load Mermaid and render
+```
+
+## How it works
+
+A rehype plugin turns each `mermaid` block into a placeholder figure at build time. On pages that have one, the browser loads Mermaid and draws the diagram. Pages without diagrams don't download it at all.

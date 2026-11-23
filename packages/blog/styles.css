@@ -1,0 +1,125 @@
+/* @terrazzo/blog styles: Mermaid figures and their controls (see Mermaid.astro). */
+
+.mermaid-figure {
+  @apply border-border/70 bg-card relative my-8 max-w-full overflow-hidden rounded-md border;
+}
+
+.mermaid-viewport {
+  max-height: min(70dvh, 36rem);
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 2.75rem 0.75rem 4.75rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mermaid-viewport:not(.is-overflowing) {
+  display: flex;
+  justify-content: center;
+}
+
+.mermaid-actions-top {
+  @apply border-border/70 bg-background/95 absolute top-2 right-2 z-[1] flex overflow-hidden rounded-md border shadow-sm backdrop-blur-sm;
+}
+
+.mermaid-controls {
+  @apply border-border/70 bg-background/95 absolute right-2 bottom-2 z-[1] rounded-md border p-1 shadow-sm backdrop-blur-sm;
+}
+
+.mermaid-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 2rem);
+  grid-template-rows: repeat(3, 2rem);
+  gap: 1px;
+}
+
+.mermaid-actions-top .mermaid-btn {
+  @apply size-8;
+}
+
+.mermaid-btn {
+  @apply text-foreground hover:bg-muted grid size-full place-items-center rounded-sm transition-colors;
+}
+
+.mermaid-btn:disabled {
+  opacity: 0.35;
+}
+
+.mermaid-btn:focus-visible {
+  @apply outline-ring outline-2 outline-offset-1;
+}
+
+.mermaid-btn.is-copied {
+  @apply bg-primary/15 text-primary;
+}
+
+.mermaid-close {
+  @apply border-border/70 bg-background/95 text-foreground hover:bg-muted absolute top-2 right-2 z-[2] grid size-8 place-items-center rounded-md border shadow-sm backdrop-blur-sm;
+}
+
+.mermaid-close:focus-visible {
+  @apply outline-ring outline-2 outline-offset-1;
+}
+
+.prose .mermaid-figure pre.mermaid,
+.mermaid-figure pre.mermaid {
+  @apply m-0 w-max max-w-none bg-transparent p-0 font-mono text-xs leading-relaxed shadow-none;
+  color: hsl(var(--muted-foreground));
+}
+
+.mermaid-figure pre.mermaid[data-processed] {
+  color: inherit;
+}
+
+.prose .mermaid-figure pre.mermaid svg,
+.mermaid-figure pre.mermaid svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0;
+}
+
+.mermaid-figure.is-ready pre.mermaid svg {
+  max-width: none;
+}
+
+.mermaid-figure.is-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  margin: 0;
+  border-radius: 0;
+  background: hsl(var(--background));
+}
+
+.mermaid-figure.is-fullscreen .mermaid-viewport {
+  max-height: none;
+  height: 100%;
+  padding-top: 3rem;
+  padding-bottom: 5rem;
+}
+
+.mermaid-figure.is-fullscreen .mermaid-actions-top {
+  display: none;
+}
+
+.mermaid-figure.is-fullscreen .mermaid-close {
+  top: max(0.5rem, env(safe-area-inset-top));
+  right: max(0.5rem, env(safe-area-inset-right));
+}
+
+.mermaid-figure.is-fullscreen .mermaid-controls {
+  right: max(0.5rem, env(safe-area-inset-right));
+  bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
+html.mermaid-lock,
+html.mermaid-lock body {
+  overflow: hidden;
+}
+
+.mermaid-figure .nodeLabel,
+.mermaid-figure .edgeLabel,
+.mermaid-figure .actor,
+.mermaid-figure .messageText {
+  font-family: var(--font-mono), ui-monospace, monospace;
+}

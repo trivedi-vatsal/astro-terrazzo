@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content'
+import { BlogExplorer, isListedPost, toBlogPostSummary } from '@terrazzo/blog'
+import PageLayout from '../../layouts/PageLayout.astro'
+import { PAGES } from '../../config.ts'
+
+const posts = (await getCollection('blog', isListedPost))
+  .map(toBlogPostSummary)
+  .sort((a, b) => b.pubDate.localeCompare(a.pubDate))
+---
+
+<PageLayout title={PAGES.blog.title} description={PAGES.blog.description}>
+  <Fragment slot="header">
+    <h1 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight">
+      {PAGES.blog.title}
+    </h1>
+    <p class="text-muted-foreground mt-4">{PAGES.blog.description}</p>
+  </Fragment>
+
+  <BlogExplorer posts={posts} />
+</PageLayout>

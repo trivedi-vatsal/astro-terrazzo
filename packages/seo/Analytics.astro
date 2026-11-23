@@ -1,0 +1,24 @@
+---
+/**
+ * Google Analytics (gtag.js). Render it only when you have a measurement ID.
+ * Adapted from https://github.com/Destiner/astro-analytics (MIT).
+ */
+interface Props {
+  id: string
+}
+
+const { id } = Astro.props
+---
+
+<script
+  async
+  src={`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(id)}`}
+></script>
+<script is:inline define:vars={{ id }}>
+  window.dataLayer = window.dataLayer || []
+  function gtag() {
+    window.dataLayer.push(arguments)
+  }
+  gtag('js', new Date())
+  gtag('config', id)
+</script>
