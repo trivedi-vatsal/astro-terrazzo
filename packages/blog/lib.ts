@@ -1,3 +1,5 @@
+import { withBase } from '../ui/url.ts'
+
 export type SeriesRef = {
   slug: string
   title: string
@@ -70,7 +72,7 @@ export function isListedPost(entry: { data: { draft: boolean } }): boolean {
 }
 
 export function tagHref(tag: string): string {
-  return `/blog/tags/${slugifyTag(tag)}/`
+  return withBase(`/blog/tags/${slugifyTag(tag)}/`)
 }
 
 export function slugifyTag(tag: string): string {
@@ -121,7 +123,7 @@ export function toBlogPostSummary(entry: BlogEntry): BlogPostSummary {
     id: entry.id,
     title: entry.data.title,
     description: entry.data.description,
-    href: `/blog/${entry.id}/`,
+    href: withBase(`/blog/${entry.id}/`),
     pubDate: entry.data.pubDate.toISOString(),
     updatedDate: entry.data.updatedDate?.toISOString(),
     tags: entry.data.tags,
@@ -220,7 +222,7 @@ export function buildSeriesFromPosts(posts: BlogPostSummary[]): BlogSeries {
       parts.find((post) => post.series?.description)?.series?.description ??
       first?.description ??
       '',
-    href: first?.href ?? '/blog/',
+    href: first?.href ?? withBase('/blog/'),
     pubDate: latest?.pubDate ?? first?.pubDate ?? new Date().toISOString(),
     readingTime: parts.reduce((sum, post) => sum + post.readingTime, 0),
     tags: uniqueTags(parts),

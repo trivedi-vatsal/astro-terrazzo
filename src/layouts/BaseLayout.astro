@@ -1,4 +1,5 @@
 ---
+import { withBase } from '@terrazzo/ui'
 import '../styles/global.css'
 import { ClientRouter } from 'astro:transitions'
 import { Analytics, Head, formatTitle, siteJsonLd } from '@terrazzo/seo'
@@ -33,6 +34,7 @@ const {
 } = Astro.props
 
 const site = Astro.site!
+const root = new URL(withBase('/'), site)
 const analyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID
 ---
 
@@ -50,7 +52,7 @@ const analyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID
       author={author}
       jsonLd={[
         siteJsonLd({
-          site,
+          site: root,
           name: SITE.title,
           description: SITE.description,
           lang: SITE.lang,
@@ -67,12 +69,17 @@ const analyticsId = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID
       rel="alternate"
       type="application/rss+xml"
       title={`${SITE.title} RSS`}
-      href={new URL('rss.xml', site)}
+      href={new URL(withBase('/rss.xml'), site)}
     />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <link
+      rel="icon"
+      href={withBase('/favicon-32x32.png')}
+      type="image/png"
+      sizes="32x32"
+    />
+    <link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
+    <link rel="manifest" href={withBase('/site.webmanifest')} />
     <ThemeScript />
     <ClientRouter />
     {analyticsId && <Analytics id={analyticsId} />}

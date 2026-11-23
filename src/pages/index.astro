@@ -1,4 +1,5 @@
 ---
+import { withBase } from '@terrazzo/ui'
 import { getCollection } from 'astro:content'
 import {
   formatPostDate,
@@ -51,7 +52,7 @@ const latest = getFeaturedJournal(posts)
       <NowTile {...NOW} />
       <FeaturedTile {...FEATURED} />
       <BuildingTile {...BUILDING} />
-      <ExperimentsTile items={EXPERIMENTS} href="/experiments/" />
+      <ExperimentsTile items={EXPERIMENTS} href={withBase('/experiments/')} />
       <StackTile items={STACK} />
       <ToolsTile {...TOOLS} />
       {latest ? (
@@ -69,7 +70,7 @@ const latest = getFeaturedJournal(posts)
           eyebrow={PAGES.blog.title}
           title="Journal coming soon"
           description="No posts yet. Check back soon."
-          href="/blog/"
+          href={withBase('/blog/')}
           tags={[]}
           meta=""
         />

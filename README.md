@@ -4,6 +4,10 @@ Terrazzo is a portfolio and blog theme for [Astro](https://astro.build) with a b
 
 It ships no UI framework. Interactive parts are small custom elements, so most pages load almost no JavaScript.
 
+**[Live demo](https://vatsal.xyz/astro-terrazzo/)**
+
+![Terrazzo home page: a bento grid of tiles in light mode](.github/preview.png)
+
 ## Features
 
 - **Bento home page:** intro, "now", featured project, stack, tools, latest post, build log and contact tiles
@@ -120,7 +124,7 @@ The packages are plain folders imported through path aliases (`@terrazzo/ui`, `@
 `npm run build` writes a static site to `dist/`, which any static host can serve. Set `site` in `astro.config.ts` to the URL you deploy to first, so canonical links, the sitemap, RSS and share images point at it.
 
 - **Netlify, Vercel, Cloudflare Pages:** import the repository. The build command is `npm run build` and the output folder is `dist`.
-- **GitHub Pages:** use [Astro's GitHub Pages guide](https://docs.astro.build/en/guides/deploy/github/). If the site lives under a subpath such as `/my-repo/`, also set `base`.
+- **GitHub Pages:** in your repository settings, set Pages → Source to **GitHub Actions** and add the Actions variable `DEPLOY_PAGES` = `true`. The included workflow deploys every push to `main`, and reads the site URL and any `/my-repo/` subpath from your Pages settings, so you don't need to edit `site` or `base`.
 
 ## Credits
 

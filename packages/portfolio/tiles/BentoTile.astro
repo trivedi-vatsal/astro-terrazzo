@@ -1,4 +1,5 @@
 ---
+import { withBase } from '@terrazzo/ui'
 /** Card surface for the bento grid. Renders a link when `href` is set. */
 interface Props {
   class?: string
@@ -31,7 +32,7 @@ const style = delay ? `animation-delay: ${delay}ms` : undefined
 
 {href ? (
   <a
-    href={href}
+    href={withBase(href)}
     id={id}
     aria-label={label}
     data-tile={tile}

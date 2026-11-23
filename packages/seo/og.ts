@@ -1,3 +1,4 @@
+import { stripBase, withBase } from '../ui/url.ts'
 import sharp from 'sharp'
 
 export const OG_WIDTH = 1200
@@ -32,15 +33,15 @@ const DEFAULT_COLORS = {
 const SANS = 'ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif'
 const MONO = 'ui-monospace, SFMono-Regular, Menlo, monospace'
 
-/** `/blog/post/` → `blog/post`, `/` → `home`. */
+/** `/blog/post/` → `blog/post`, `/` → `home`. Ignores Astro's `base`. */
 export function ogPathFor(pathname: string): string {
-  return pathname.replace(/^\/+|\/+$/g, '') || 'home'
+  return stripBase(pathname).replace(/^\/+|\/+$/g, '') || 'home'
 }
 
 /** Absolute URL of the generated PNG for an OG path. */
 export function ogImageUrl(site: URL | string, path: string): string {
   const encoded = path.split('/').map(encodeURIComponent).join('/')
-  return `${String(site).replace(/\/$/, '')}/og/${encoded}.png`
+  return new URL(withBase(`/og/${encoded}.png`), site).href
 }
 
 export function escapeXml(value: string): string {
