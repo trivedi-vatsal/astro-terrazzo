@@ -1,4 +1,5 @@
 ---
+import { withBase } from '@terrazzo/ui'
 import { Icon } from '@terrazzo/ui'
 import BentoTile from './BentoTile.astro'
 import type { IconLink } from '../types.ts'
@@ -26,7 +27,7 @@ const { title, interests, caption } = Astro.props
       {interests.map((interest, i) => (
         <li>
           <a
-            href={interest.href}
+            href={withBase(interest.href)}
             target={interest.external ? '_blank' : undefined}
             rel={interest.external ? 'noopener noreferrer' : undefined}
             class="hover:text-primary bento-wake bento-wake-up flex items-start gap-2.5 text-lg font-medium tracking-tight transition-colors sm:text-xl"

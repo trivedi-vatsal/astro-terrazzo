@@ -1,4 +1,5 @@
 ---
+import { withBase } from '@terrazzo/ui'
 import BentoTile from './BentoTile.astro'
 import type { Identity } from '../types.ts'
 
@@ -28,14 +29,14 @@ const nameHtml = `${name.split(' ').map(escape).join('<br />')}<span>.</span>`
       <a
         class="work-link bento-wake bento-wake-up"
         style="--wake-delay: 40ms"
-        href={primary.href}
+        href={withBase(primary.href)}
       >
         {primary.label}
       </a>
       <a
         class="about-link bento-wake bento-wake-x"
         style="--wake-delay: 80ms"
-        href={secondary.href}
+        href={withBase(secondary.href)}
       >
         {secondary.label} <span aria-hidden="true">→</span>
       </a>
@@ -43,7 +44,7 @@ const nameHtml = `${name.split(' ').map(escape).join('<br />')}<span>.</span>`
     <a
       class="identity-location bento-wake bento-wake-fade"
       style="--wake-delay: 120ms"
-      href={location.href}
+      href={withBase(location.href)}
     >
       {location.label}
     </a>

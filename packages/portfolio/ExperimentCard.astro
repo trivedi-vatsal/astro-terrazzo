@@ -1,4 +1,5 @@
 ---
+import { withBase } from '@terrazzo/ui'
 /** Card for an experiment: browser-chrome cover that scrolls on hover. */
 import type { Experiment } from './types.ts'
 
@@ -14,7 +15,7 @@ const number = String(index).padStart(2, '0')
 ---
 
 <a
-  href={href}
+  href={withBase(href)}
   class="bento-tile experiment-card group relative flex h-full flex-col overflow-hidden"
 >
   <div class="experiment-media">
@@ -27,7 +28,7 @@ const number = String(index).padStart(2, '0')
     <div class="experiment-viewport">
       {item.cover ? (
         <img
-          src={item.cover}
+          src={withBase(item.cover)}
           alt=""
           class="experiment-shot"
           loading="lazy"

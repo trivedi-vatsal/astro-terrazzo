@@ -35,7 +35,7 @@ export function rssXml(feed: {
     })
     .join('')
 
-  return `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>${esc(feed.title)}</title><description>${esc(feed.description)}</description><link>${esc(new URL('/', site).href)}</link>${items}</channel></rss>`
+  return `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>${esc(feed.title)}</title><description>${esc(feed.description)}</description><link>${esc(new URL('./', site).href)}</link>${items}</channel></rss>`
 }
 
 /** Response helper for an Astro endpoint. */

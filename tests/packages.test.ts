@@ -16,6 +16,7 @@ import { rehypeLinksNewTab } from '../packages/blog/rehype.ts'
 import { rssXml } from '../packages/blog/rss.ts'
 import { buildLog, yearsOfExperience } from '../packages/portfolio/lib.ts'
 import { ogPathFor, wrapLines } from '../packages/seo/og.ts'
+import { stripBase, withBase } from '../packages/ui/url.ts'
 
 const post = (
   id: string,
@@ -176,4 +177,16 @@ test('external links open in a new tab and keep their rel', () => {
   assert.equal(external.properties.target, '_blank')
   assert.deepEqual(external.properties.rel, ['me', 'noopener', 'noreferrer'])
   assert.equal(local.properties.target, undefined)
+})
+
+test('withBase prefixes site-root paths once and leaves URLs alone', () => {
+  const b = '/repo/'
+  assert.equal(withBase('/blog/', b), '/repo/blog/')
+  assert.equal(withBase('/', b), '/repo/')
+  assert.equal(withBase(withBase('/blog/', b), b), '/repo/blog/')
+  for (const href of ['https://x.dev/', '//cdn.dev/a', '#top', 'mailto:a@b.c'])
+    assert.equal(withBase(href, b), href)
+  assert.equal(withBase('/blog/'), '/blog/')
+  assert.equal(stripBase('/repo/blog/x/', b), '/blog/x/')
+  assert.equal(stripBase('/other/', b), '/other/')
 })

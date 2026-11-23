@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro'
+import { withBase } from '@terrazzo/ui'
 
 export const GET: APIRoute = ({ site }) =>
   new Response(
-    `User-agent: *\nAllow: /\n\nSitemap: ${new URL('sitemap-index.xml', site)}\n`,
+    `User-agent: *\nAllow: /\n\nSitemap: ${new URL(withBase('/sitemap-index.xml'), site)}\n`,
   )

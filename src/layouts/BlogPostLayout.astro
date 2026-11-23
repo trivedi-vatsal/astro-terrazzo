@@ -1,4 +1,5 @@
 ---
+import { withBase } from '@terrazzo/ui'
 import { getCollection, render, type CollectionEntry } from 'astro:content'
 import {
   Mermaid,
@@ -27,9 +28,9 @@ const { Content, headings } = await render(post)
 const site = Astro.site!
 const author = post.data.author ?? SITE.author
 const modified = post.data.updatedDate ?? post.data.pubDate
-const url = new URL(`/blog/${post.id}/`, site).href
+const url = new URL(withBase(`/blog/${post.id}/`), site).href
 const image = post.data.heroImage
-  ? new URL(post.data.heroImage, site).href
+  ? new URL(withBase(post.data.heroImage), site).href
   : ogImageUrl(site, `blog/${post.id}`)
 const series = post.data.series
   ? getSeriesForPost(
@@ -65,7 +66,7 @@ const longDate = (date: Date) =>
   author={author}
   jsonLd={[
     blogPostingJsonLd({
-      site,
+      site: new URL(withBase('/'), site),
       title: post.data.title,
       description: post.data.description,
       url,
@@ -80,13 +81,16 @@ const longDate = (date: Date) =>
     <nav aria-label="Breadcrumb" class="text-muted-foreground mb-4 text-sm">
       <ol class="flex flex-wrap items-center gap-2">
         <li>
-          <a href="/" class="hover:text-primary transition-colors">
+          <a href={withBase('/')} class="hover:text-primary transition-colors">
             Home
           </a>
         </li>
         <li aria-hidden="true">›</li>
         <li>
-          <a href="/blog/" class="hover:text-primary transition-colors">
+          <a
+            href={withBase('/blog/')}
+            class="hover:text-primary transition-colors"
+          >
             {PAGES.blog.title}
           </a>
         </li>
