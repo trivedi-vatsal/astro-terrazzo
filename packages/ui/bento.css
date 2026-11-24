@@ -199,7 +199,7 @@
     animation: float-y 5s ease-in-out infinite;
   }
 
-  /* Black line ink on a warm ground so the drawing stays readable in both modes */
+  /* Portrait on a warm ground so it stays readable in both modes */
   .portrait-ink {
     filter: contrast(1.18);
   }

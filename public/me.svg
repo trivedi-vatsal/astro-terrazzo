@@ -1,19 +1,57 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 650" fill="none" stroke="#1c1814" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
-  <!-- Placeholder line portrait. Replace with your own drawing or photo. -->
-  <path d="M206 228c-6-74 38-126 102-124 58 2 94 44 92 104"/>
-  <path d="M206 228c-14 4-18 30-4 46 6 7 14 8 18 4"/>
-  <path d="M400 208c14 4 18 30 4 46-6 7-14 8-18 4"/>
-  <path d="M206 228c4 74 44 138 98 138s88-58 92-140"/>
-  <path d="M220 176c34 22 92 26 142 6 20-8 34-4 40 10"/>
-  <path d="M238 152c26-26 76-36 118-18"/>
-  <path d="M254 238h44M318 238h44"/>
-  <path d="M262 262c8-6 20-6 28 0M326 262c8-6 20-6 28 0"/>
-  <path d="M308 268c-4 22-10 34-2 40 6 4 14 2 18-2"/>
-  <path d="M282 328c18 12 40 12 56 0"/>
-  <path d="M270 360c-2 30-8 46-22 58M346 360c2 30 8 46 22 58"/>
-  <path d="M248 418c-74 16-136 52-160 124-10 32-14 64-14 108"/>
-  <path d="M368 418c74 16 136 52 160 124 10 32 14 64 14 108"/>
-  <path d="M248 418c14 34 38 54 60 54s46-20 60-54"/>
-  <path d="M308 472v178"/>
-  <path d="M176 520c12 40 16 86 14 130M440 520c-12 40-16 86-14 130"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 650">
+  <!-- Placeholder portrait of the sample persona. Replace public/me.svg with your own photo or drawing. -->
+  <title>Illustrated portrait of Alex Morgan</title>
+  <!-- light behind the head -->
+  <circle cx="280" cy="292" r="222" fill="#efe4d6"/>
+  <!-- terrazzo chips -->
+  <g>
+    <path d="M86 168l14-9 11 12-9 14-15-4z" fill="#b95c33" opacity=".8"/>
+    <path d="M462 128l12-4 7 11-10 9-11-6z" fill="#2b1f19" opacity=".55"/>
+    <path d="M112 392l9-7 9 8-6 10-10-2z" fill="#2b1f19" opacity=".45"/>
+    <path d="M454 352l16-6 8 14-12 11-13-7z" fill="#b95c33" opacity=".75"/>
+    <path d="M420 70l8-5 6 8-7 7-8-3z" fill="#b95c33" opacity=".55"/>
+    <path d="M150 84l10-3 5 10-8 6-8-5z" fill="#d9b48f"/>
+    <path d="M492 238l7-3 5 7-6 6-7-3z" fill="#d9b48f"/>
+    <path d="M62 290l8-4 6 8-6 7-8-4z" fill="#b95c33" opacity=".6"/>
+  </g>
+  <!-- sweater -->
+  <path d="M52 650c8-104 82-166 176-182h104c94 16 168 78 176 182z" fill="#b95c33"/>
+  <path d="M108 650c10-60 40-104 84-132" fill="none" stroke="#a24f2a" stroke-width="6" stroke-linecap="round"/>
+  <path d="M452 650c-10-60-40-104-84-132" fill="none" stroke="#a24f2a" stroke-width="6" stroke-linecap="round"/>
+  <!-- neck -->
+  <path d="M238 392h84l6 92c-30 22-66 22-96 0z" fill="#c98a63"/>
+  <path d="M238 420c26 18 58 18 84 0v-28h-84z" fill="#b97a55"/>
+  <!-- collar: tee inside a ribbed crew neck -->
+  <path d="M218 474c28 40 96 40 124 0l18 8c-30 58-130 58-160 0z" fill="#94472a"/>
+  <path d="M232 478c24 26 72 26 96 0l-6-6c-22 20-62 20-84 0z" fill="#f6efe6"/>
+  <g transform="translate(280 298) scale(1.17) translate(-280 -290)">
+  <!-- ears -->
+  <ellipse cx="182" cy="296" rx="20" ry="32" fill="#d39670"/>
+  <ellipse cx="378" cy="296" rx="20" ry="32" fill="#d39670"/>
+  <path d="M184 282c-8 6-8 22 0 28M376 282c8 6 8 22 0 28" fill="none" stroke="#b97a55" stroke-width="4" stroke-linecap="round"/>
+  <!-- face -->
+  <path d="M182 268c0-70 42-108 98-108s98 38 98 108c0 82-42 148-98 148s-98-66-98-148z" fill="#dca47c"/>
+  <!-- hair -->
+  <path d="M176 294C154 196 206 116 284 116c80 0 128 70 104 176-4-26-12-50-28-74-34 16-92 16-124-10-20 28-46 46-60 86z" fill="#2b1f19"/>
+  <path d="M236 202c14-40 66-58 112-40-30-6-70 6-90 40z" fill="#4a3428"/>
+  <path d="M300 136c26 2 50 14 62 32" fill="none" stroke="#4a3428" stroke-width="6" stroke-linecap="round"/>
+  <!-- brows -->
+  <path d="M220 258q22-12 44-2M296 256q22-10 44 2" fill="none" stroke="#2b1f19" stroke-width="8" stroke-linecap="round"/>
+  <!-- glasses -->
+  <g fill="none" stroke="#1f1a17" stroke-width="5">
+    <circle cx="244" cy="294" r="31" fill="#ffffff" fill-opacity=".14"/>
+    <circle cx="316" cy="294" r="31" fill="#ffffff" fill-opacity=".14"/>
+    <path d="M275 292q5-7 10 0M213 290l-29-6M347 290l29-6" stroke-linecap="round"/>
+  </g>
+  <!-- eyes -->
+  <ellipse cx="244" cy="297" rx="6.5" ry="7.5" fill="#1f1a17"/>
+  <ellipse cx="316" cy="297" rx="6.5" ry="7.5" fill="#1f1a17"/>
+  <circle cx="246.5" cy="294" r="2" fill="#fff"/>
+  <circle cx="318.5" cy="294" r="2" fill="#fff"/>
+  <!-- cheeks, nose, smile -->
+  <circle cx="226" cy="344" r="17" fill="#e48a6a" opacity=".3"/>
+  <circle cx="334" cy="344" r="17" fill="#e48a6a" opacity=".3"/>
+  <path d="M283 306q12 34-6 44" fill="none" stroke="#b87a55" stroke-width="5" stroke-linecap="round"/>
+  <path d="M252 372q28 24 56 0" fill="none" stroke="#8c4a2e" stroke-width="6" stroke-linecap="round"/>
+  </g>
 </svg>
