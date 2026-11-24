@@ -9,9 +9,9 @@ import { ROLES } from './work.ts'
 
 export const INTRO = {
   greeting: "Hey, I'm Alex!",
-  /** Line drawing shown next to the bio; replace public/me.svg with yours. */
+  /** Portrait shown next to the bio; replace public/me.svg with your photo or drawing. */
   portrait: '/me.svg',
-  portraitAlt: 'Line drawing of Alex Morgan',
+  portraitAlt: 'Illustrated portrait of Alex Morgan',
   paragraphs: [
     `I'm a product engineer with ${yearsOfExperience(ROLES)} years of building web apps, design systems, and internal tools. I like owning a problem the whole way: figure out what is worth building, design it, ship it, then check that it actually helped.`,
     'Right now I lead the design system at Northwind Labs, where four product teams build on the same components, tokens, and docs. Before that I built client apps at Acme Studio and wrote my first production code at Initech.',
